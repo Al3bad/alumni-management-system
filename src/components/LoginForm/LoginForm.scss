@@ -1,0 +1,33 @@
+@import "./../../scss/button";
+@import "./../../scss/variables";
+
+.login-page {
+  width: 100%;
+  .login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .error-message {
+      width: 100%;
+      padding: 0.8rem 0;
+      font-size: 1.4rem;
+      color: $error-color;
+    }
+    .buttons {
+      width: 100%;
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      .home-btn,
+      .submit-btn {
+        text-align: center;
+        width: 47%;
+        height: 100%;
+      }
+    }
+    @media only screen and (max-width: 425px) {
+      padding: 4rem;
+    }
+  }
+}
