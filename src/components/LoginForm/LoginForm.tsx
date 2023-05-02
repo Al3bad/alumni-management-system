@@ -15,9 +15,10 @@ export default function LoginForm({ setFormType }: IProps) {
   const [errorMsg, setErrorMsg] = useState("");
   return (
     <div className="login-page">
+      {errorMsg ? <p className="error-message">{errorMsg}</p> : null}
       <Formik
         initialValues={{
-          username: "",
+          "student-id": "",
           password: "",
         }}
         validationSchema={Yup.object({
@@ -55,10 +56,10 @@ export default function LoginForm({ setFormType }: IProps) {
       >
         <Form className="login-form">
           <TextInput
-            label="Email Address"
-            name="username"
-            type="email"
-            placeholder=""
+            label="Student ID"
+            name="student-id"
+            type="text"
+            placeholder="e.g. s1234567"
           />
           <TextInput
             label="Password"

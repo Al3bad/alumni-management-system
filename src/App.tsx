@@ -38,19 +38,26 @@ const ButtonList = ({ setFormType }: IProps) => {
 
 export default function App() {
   const [formType, setFormType] = useState<string>("");
-  useEffect(() => {
-    console.log(formType);
-  });
   return (
     <div className="home-page">
       <div className="container">
         <img className="logo" src={RMITLogo} alt="logo" />
+        <h1>Alumni Managment System</h1>
+        <hr
+          style={{
+            width: "100%",
+            margin: "1rem 0",
+            marginBottom: "2rem",
+            border: "none",
+            borderTop: "1px solid #ddd",
+          }}
+        />
         {formType === "login" ? (
           <LoginForm setFormType={setFormType} />
         ) : formType === "register" ? (
-          <RegisterForm />
+          <RegisterForm setFormType={setFormType} />
         ) : formType === "verify" ? (
-          <VerifyForm />
+          <VerifyForm setFormType={setFormType} />
         ) : (
           <ButtonList setFormType={setFormType} />
         )}
