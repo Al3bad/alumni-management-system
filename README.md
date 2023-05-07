@@ -20,8 +20,8 @@
 
 ## Backend
 
-- [ ] Write the boilerplate for express server
-- [ ] Define the routes for the application
+- [x] Write the boilerplate for express server
+- [x] Define the routes for the application
 
 - [ ] Create SQLite database
 - [ ] Create Alumni and Certificate tables
