@@ -15,6 +15,7 @@ if (process.env.NODE_ENV === "production") {
 // ==============================================
 import express from "express";
 import api from "./backend/api";
+import { createAlumniTable, createCertificateTable } from "./backend/dbQueries";
 
 // ==============================================
 // ==> Prepare App
@@ -52,6 +53,8 @@ app.listen(port, async () => {
   //   await resetDB();
   //   seedDB();
   // }
+  createAlumniTable();
+  createCertificateTable();
   console.log(
     `Server is running on port ${port} in ${
       process.env.NODE_ENV || "development"
