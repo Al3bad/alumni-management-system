@@ -21,11 +21,23 @@ export default function RegisterForm({ setFormType }: IProps) {
           password: "",
         }}
         validationSchema={Yup.object({
-          studentId: Yup.string().required("Required"), // TODO: use regex expressions to validate student id format
+          studentId: Yup.string()
+            .trim()
+            .matches(
+              /^s([\d]{7})$/,
+              "Student ID must be in this format: s1234567"
+            )
+            .required("Required"),
           email: Yup.string()
             .email("Invalid email addresss")
             .required("Required"),
-          password: Yup.string().required("Required"),
+          password: Yup.string()
+            .min(10)
+            .matches(
+              /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{10,}$/,
+              "Password must contain lower-, uppercase, numbers, & special symbols"
+            )
+            .required("Required"),
         })}
         onSubmit={async (values, { setSubmitting }) => {
           // TODO: Handle form submission

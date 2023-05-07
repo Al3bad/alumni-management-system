@@ -13,6 +13,9 @@ function TextInput({ label, ...props }: any) {
         id={props.id || props.name}
         {...field}
         {...props}
+        onKeyDown={(e) => {
+          e.key === "Enter" && e.preventDefault();
+        }}
       />
       {meta.touched && meta.error ? (
         <div className="text-input__error">{meta.error}</div>

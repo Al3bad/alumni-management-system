@@ -18,17 +18,22 @@ export default function LoginForm({ setFormType }: IProps) {
       {errorMsg ? <p className="error-message">{errorMsg}</p> : null}
       <Formik
         initialValues={{
-          "student-id": "",
+          studentId: "",
           password: "",
         }}
         validationSchema={Yup.object({
-          username: Yup.string()
-            .email("Invalid email addresss")
+          studentId: Yup.string()
+            .trim()
+            .matches(
+              /^s([\d]{7})$/,
+              "Student ID must be in this format: s1234567"
+            )
             .required("Required"),
           password: Yup.string().required("Required"),
         })}
         onSubmit={async (values, { setSubmitting }) => {
           // TODO: Handle form submission
+          console.log(values);
           if (errorMsg) setErrorMsg("");
           try {
             const res = await fetch("/api/login", {
@@ -54,31 +59,37 @@ export default function LoginForm({ setFormType }: IProps) {
           setSubmitting(false);
         }}
       >
-        <Form className="login-form">
-          <TextInput
-            label="Student ID"
-            name="student-id"
-            type="text"
-            placeholder="e.g. s1234567"
-          />
-          <TextInput
-            label="Password"
-            name="password"
-            type="password"
-            placeholder=""
-          />
-          <div className="buttons">
-            <button
-              className="secondary-btn home-btn"
-              onClick={() => setFormType("")}
-            >
-              BACK
-            </button>
-            <button className="primary-btn submit-btn" type="submit">
-              LOGIN
-            </button>
-          </div>
-        </Form>
+        {({ isSubmitting }) => (
+          <Form className="login-form">
+            <TextInput
+              label="Student ID"
+              name="studentId"
+              type="text"
+              placeholder="e.g. s1234567"
+            />
+            <TextInput
+              label="Password"
+              name="password"
+              type="password"
+              placeholder=""
+            />
+            <div className="buttons">
+              <button
+                className="secondary-btn home-btn"
+                onClick={() => setFormType("")}
+              >
+                BACK
+              </button>
+              <button
+                className="primary-btn submit-btn"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                LOGIN
+              </button>
+            </div>
+          </Form>
+        )}
       </Formik>
     </div>
   );
