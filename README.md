@@ -13,20 +13,21 @@
 - [ ] Handle register response from backend
 
 - [x] Implement verify certificate form
-- [x] Validate input in verify certificate form
-- [ ] Send certificate id to backend
-- [ ] Handle response from backend for the certificate verification
-- [ ]
+- [x] Validate input in verify certificate form in the frontend
+- [ ] Validate input in verify certificate form in the backend
+- [x] Send certificate id to backend
+- [x] Handle response from backend for the certificate verification
+- [ ] Response with the certificate file [OPTIONAL]
 
 ## Backend
 
 - [x] Write the boilerplate for express server
 - [x] Define the routes for the application
 
-- [ ] Create SQLite database
-- [ ] Create Alumni and Certificate tables
+- [x] Create SQLite database
+- [x] Create Alumni and Certificate tables
 - [ ] write query to insert new alumni to the db [for /api/register route]
 - [ ] write query to insert certificate to the db [for /admin route]
-- [ ] write query to get certificate from db [for /certificate route]
+- [x] write query to get certificate from db [for /certificate route]
 - [ ] write query to get alumni details [for /profile route]
 - [ ]

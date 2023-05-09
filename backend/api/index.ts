@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { getCertificate } from "../dbQueries";
 
 const api = Router();
 
@@ -16,7 +17,22 @@ api.post("/login", (req, res) => {
 });
 
 api.post("/verify", (req, res) => {
-  res.end("/api/verify route is working!");
+  console.log("/api/verify route is working!");
+  const { lName, certID } = req.body;
+  // TODO: verify certificate id and name
+  // ...
+  // ...
+
+  // run SQL query
+  const certificate = getCertificate(lName, certID);
+
+  // if the require is found, send it to the client
+  if (certificate) res.json(certificate);
+  // otherwise, send an error message
+  else {
+    res.statusCode = 404;
+    res.json({ error: { msg: "Certificate not found!" } });
+  }
 });
 
 export default api;

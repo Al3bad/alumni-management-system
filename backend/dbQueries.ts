@@ -17,9 +17,15 @@ interface Alumni {
 }
 
 interface Certificate {
-  id: string; // {PK}
+  id: number; // {PK}
   issueDate: string;
   studentNum: number; // {FK}
+}
+
+interface CertificateData {
+  alumniName: string;
+  certID: string;
+  issueDate: string;
 }
 
 // ==============================================
@@ -45,7 +51,7 @@ export const createAlumniTable = () => {
 export const createCertificateTable = () => {
   try {
     const stmt = db.prepare(`CREATE TABLE IF NOT EXISTS certificate (
-                                id TEXT NOT NULL UNIQUE PRIMARY KEY,
+                                id INTEGER NOT NULL UNIQUE PRIMARY KEY,
                                 issuedate TEXT NOT NULL,
                                 studentnum INTEGER,
                                 FOREIGN KEY (studentnum) REFERENCES alumni(studentnum)
@@ -72,5 +78,36 @@ export const createCertificateTable = () => {
 // ==============================================
 
 // Insert new certificate (by admin)
+export const insertCertificate = () => {
+  try {
+    // TODO:
+    const stmt = db.prepare(``);
+    const info = stmt.run();
+  } catch (err) {
+    console.log(`[ERROR] insertCertificate function`);
+  }
+};
 
 // Get certificate record (for external users)
+export const getCertificate = (lName: string, id: string) => {
+  try {
+    const stmt = db.prepare(`SELECT
+                                a.fname || ' ' || a.lname
+                                    AS "alumniName",
+                                SUBSTR(strftime('%Y', c.issuedate), 3) || PRINTF('%07d',c.id)
+                                    AS "certId",
+                                c.issuedate
+                                    AS "issueDate"
+                            FROM certificate c
+                            JOIN alumni a
+                                ON c.studentnum = a.studentnum
+                            WHERE LOWER(lname) = LOWER(?)
+                            AND "certID" = ?
+                          `);
+    const certificate: CertificateData | unknown = stmt.get(lName, id);
+    return certificate;
+  } catch (err) {
+    console.log(`[ERROR] getCertificate function`);
+    console.log(err);
+  }
+};
