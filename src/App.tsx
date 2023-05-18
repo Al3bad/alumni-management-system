@@ -1,5 +1,5 @@
 // Modules & External Components
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LoginForm from "./components/LoginForm/LoginForm";
 import RegisterForm from "./components/RegisterForm/RegisterForm";
 import VerifyForm from "./components/VerifyForm/VerifyForm";
@@ -43,15 +43,7 @@ export default function App() {
       <div className="container">
         <img className="logo" src={RMITLogo} alt="logo" />
         <h1>Alumni Managment System</h1>
-        <hr
-          style={{
-            width: "100%",
-            margin: "1rem 0",
-            marginBottom: "2rem",
-            border: "none",
-            borderTop: "1px solid #ddd",
-          }}
-        />
+        <hr />
         {formType === "login" ? (
           <LoginForm setFormType={setFormType} />
         ) : formType === "register" ? (

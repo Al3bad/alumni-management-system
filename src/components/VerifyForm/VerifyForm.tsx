@@ -5,6 +5,8 @@ import * as Yup from "yup";
 // Components
 import TextInput from "./../TextInput/TextInput";
 
+import "./VerifyForm.scss";
+
 interface IProps {
   setFormType: (formType: string) => void;
 }
@@ -12,7 +14,7 @@ interface IProps {
 export default function VerifyForm({ setFormType }: IProps) {
   const [errorMsg, setErrorMsg] = useState("");
   return (
-    <div className="login-page">
+    <div className="verify-page">
       {errorMsg ? <p className="error-message">{errorMsg}</p> : null}
       <Formik
         initialValues={{
@@ -55,7 +57,7 @@ export default function VerifyForm({ setFormType }: IProps) {
           setSubmitting(false);
         }}
       >
-        <Form className="login-form">
+        <Form className="verify-form">
           <TextInput
             label="Last Name"
             name="lName"

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getCertificate } from "../dbQueries";
+import routersAuth from "./routesAuth";
 
 const api = Router();
 
@@ -8,9 +9,7 @@ api.get("/", (req, res) => {
   res.end("The API is up and running :)");
 });
 
-api.post("/register", (req, res) => {
-  res.end("/api/register route is working!");
-});
+api.use(routersAuth);
 
 api.post("/login", (req, res) => {
   res.end("/api/login route is working!");

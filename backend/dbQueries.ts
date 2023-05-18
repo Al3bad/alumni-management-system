@@ -67,9 +67,73 @@ export const createCertificateTable = () => {
 // ==> Alumni Queries
 // ==============================================
 
+// Get user by studentnum
+export const getUserByStudentNum = (studentnum: number) => {
+  try {
+    const stmt = db.prepare(
+      "SELECT studentnum, email, fname, lname FROM alumni WHERE studentnum = ?"
+    );
+    const user = stmt.get(studentnum);
+    return user;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// Get user by email
+export const getUserByEmail = (email: string) => {
+  try {
+    const stmt = db.prepare(
+      "SELECT studentnum, email, fname, lname FROM alumni WHERE email = ?"
+    );
+    const user = stmt.get(email);
+    return user;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // Insert new alumni (by admins)
 
 // Update alumni record (when alumni register)
+export const registerAlumni = ({
+  studentnum,
+  fname,
+  lname,
+  email,
+  mobile,
+  password,
+  salt,
+}: {
+  studentnum: number;
+  email: string;
+  fname: string;
+  lname: string;
+  mobile: string;
+  password: string;
+  salt: string;
+}) => {
+  try {
+    const query = `
+      INSERT INTO alumni
+        (studentnum, fname, lname, email, mobile, password, salt)
+      VALUES
+        (?,?,?,?,?,?,?)`;
+    const stmt = db.prepare(query);
+    const info = stmt.run(
+      studentnum,
+      fname,
+      lname,
+      email,
+      mobile,
+      password,
+      salt
+    );
+    return info;
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // Get alumni record (for profile page)
 

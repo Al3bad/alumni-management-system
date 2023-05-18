@@ -14,7 +14,9 @@ if (process.env.NODE_ENV === "production") {
 // ==> Import Modules
 // ==============================================
 import express from "express";
+import passport from "passport";
 import api from "./backend/api";
+import { cors, session } from "./backend/middlewares";
 import { createAlumniTable, createCertificateTable } from "./backend/dbQueries";
 
 // ==============================================
@@ -27,33 +29,22 @@ app.disable("x-powered-by");
 // ==============================================
 // ==> Middlewares
 // ==============================================
+// parse json and urlencoded bodies in the request
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use((req, res, next) => {
-  // reference: https://stackoverflow.com/a/7069902
-  if (process.env.NODE_ENV !== "production") {
-    res.header("Access-Control-Allow-Origin", [
-      process.env.DOMAIN_URL || "http://localhost:5173",
-    ]);
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Access-Control-Allow-Methods", [
-      "GET",
-      "POST",
-      "PUT",
-      "DELETE",
-    ]);
-    res.header("Access-Control-Allow-Headers", ["Content-Type"]);
-  }
-  next();
-});
+// configure sessions
+app.use(session());
+app.use(passport.session());
+// configure CORS
+app.use(cors);
 
 // ==============================================
 // ==> Frontend Routes
 // ==============================================
-// app.use(express.static(`${__dirname}/dist`));
-// app.get("/", (req, res) => {
-//   res.sendFile(`${__dirname}/dist/index.html`);
-// });
+app.use(express.static(`${__dirname}/dist`));
+app.get("/", (_, res) => {
+  res.sendFile(`${__dirname}/dist/index.html`);
+});
 
 // ==============================================
 // ==> API Routes
