@@ -24,6 +24,8 @@ export const confirmPasswordValidator = Yup.string()
   })
   .required("Required");
 
+export const passwordValidator = Yup.string().min(10).required("Required");
+
 export const emailValidator = Yup.string()
   .email("Invalid email addresss")
   .required("Required");
@@ -52,4 +54,9 @@ export const registerFormValidationBackendSchema = Yup.object({
   email: emailValidator,
   mobile: ausMobileValidator,
   password: strongPasswordValidator,
+});
+
+export const loginFormValidationSchema = Yup.object({
+  email: emailValidator,
+  password: passwordValidator,
 });

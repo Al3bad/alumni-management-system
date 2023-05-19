@@ -1,59 +1,29 @@
 // Modules & External Components
 import { useState } from "react";
-import LoginForm from "./components/LoginForm/LoginForm";
-import RegisterForm from "./components/RegisterForm/RegisterForm";
-import VerifyForm from "./components/VerifyForm/VerifyForm";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home/Home";
+import AlumniProfile from "./pages/AlumniProfile/AlumniProfile";
+import NotFound from "./pages/NotFound/NotFound";
+import AuthProvider, { useAuth } from "./context/authCtx";
 
-// Styles & Assets
 import "./App.scss";
-import RMITLogo from "./assets/rmit-logo.svg";
-
-/*
- * Notes: the purpose of this page is to collect user's information
- * for login/registeration/certificate id and send it to the server.
- */
 
 //===============================================
 // ==> Component
 //===============================================
-interface IProps {
-  setFormType: (formType: string) => void;
-}
-
-const ButtonList = ({ setFormType }: IProps) => {
-  return (
-    <div className="btn-list">
-      <button className="primary-btn" onClick={() => setFormType("login")}>
-        Login
-      </button>
-      <button className="secondary-btn" onClick={() => setFormType("register")}>
-        Register
-      </button>
-      <button className="secondary-btn" onClick={() => setFormType("verify")}>
-        Verify Certificate
-      </button>
-    </div>
-  );
-};
-
 export default function App() {
-  const [formType, setFormType] = useState<string>("");
+  const [user, setUser] = useState(null);
+  const auth = useAuth();
+
+  console.log("auth: ", auth);
+  // const [certificate, setCertificate] = useState(null);
   return (
-    <div className="home-page">
-      <div className="container">
-        <img className="logo" src={RMITLogo} alt="logo" />
-        <h1>Alumni Managment System</h1>
-        <hr />
-        {formType === "login" ? (
-          <LoginForm setFormType={setFormType} />
-        ) : formType === "register" ? (
-          <RegisterForm setFormType={setFormType} />
-        ) : formType === "verify" ? (
-          <VerifyForm setFormType={setFormType} />
-        ) : (
-          <ButtonList setFormType={setFormType} />
-        )}
-      </div>
-    </div>
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Home user={user} setUser={setUser} />} />
+        <Route path="/profile" element={<AlumniProfile />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AuthProvider>
   );
 }

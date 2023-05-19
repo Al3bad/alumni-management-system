@@ -1,0 +1,38 @@
+@import "./../../scss/button";
+@import "./../../scss/variables";
+
+.not-found-page {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .container {
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    padding: 3rem;
+    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.1);
+    h1,
+    h2 {
+      color: $primary-color;
+    }
+    h1 {
+      font-size: 6rem;
+      opacity: 0.5;
+      margin: 0;
+    }
+    h2 {
+      margin-top: 2rem;
+      font-size: 2.6rem;
+    }
+    button {
+      margin-top: 4rem;
+      width: 100%;
+    }
+  }
+}

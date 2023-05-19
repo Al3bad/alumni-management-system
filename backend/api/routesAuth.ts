@@ -17,6 +17,7 @@ declare global {
   namespace Express {
     export interface User {
       studentnum: string;
+      fname: string;
       lname: string;
     }
   }
@@ -67,7 +68,11 @@ passport.use(
         if (hashedPass !== user.password)
           return cb(null, false, { message: "Incorrect username or password" });
         // Valid credential
-        return cb(null, { studentnum: user.studentnum, lname: user.lname });
+        return cb(null, {
+          studentnum: user.studentnum,
+          fname: user.fname,
+          lname: user.lname,
+        });
       } catch (err) {
         return cb(err);
       }
@@ -78,10 +83,7 @@ passport.use(
 passport.serializeUser(function (user, cb) {
   console.log("Serialize ", user);
   process.nextTick(function () {
-    cb(null, {
-      studentnum: user.studentnum,
-      lname: user.lname,
-    });
+    cb(null, user);
   });
 });
 
@@ -95,28 +97,11 @@ passport.deserializeUser(function (user: Express.User | false | null, cb) {
 const router = Router();
 
 // ==============================================
-// ==> Check Auth for Testing
-// ==============================================
-router.get("/check-auth", checkAuth, (_, res) => {
-  res.end("You're authenticated :)");
-});
-
-// ==============================================
 // ==> Get Info of Authenticated Alumni
 // ==============================================
-router.get("/user-info", checkAuth, (req, res) => {
-  if (!req.user) {
-    res.statusCode = 401;
-    res.json({
-      statusCode: 401,
-      error: {
-        msgCode: "C-AUTH",
-        msg: "Unauthaorized user. Please Login!",
-      },
-    });
-  } else {
-    res.json({ statusCode: 200, user: req.user });
-  }
+router.get("/user", checkAuth, (req, res) => {
+  console.log(req.user);
+  res.json({ user: req.user });
 });
 
 // ==============================================
@@ -197,6 +182,10 @@ router.post("/register", async (req, res, next) => {
     password: hashedPassword,
     salt,
   });
+
+  // TODO: Create certificate for the new alumni
+  // ...
+  // ...
 
   // authenticate user after register
   passport.authenticate(

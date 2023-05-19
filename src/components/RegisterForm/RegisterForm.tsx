@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { Formik, Form } from "formik";
 import { registerFormValidationSchema } from "./../../../common/validation";
+import { useAuth } from "../../context/authCtx";
 
 // Components
 import TextInput from "./../TextInput/TextInput";
 
 import "./RegisterForm.scss";
+import { useNavigate } from "react-router-dom";
 
 interface IProps {
   setFormType: (formType: string) => void;
 }
-
-const apiURL = import.meta.env.VITE_API_URL;
 
 const initialFormValues = {
   studentID: "",
@@ -25,6 +25,8 @@ const initialFormValues = {
 
 export default function RegisterForm({ setFormType }: IProps) {
   const [errorMsg, setErrorMsg] = useState("");
+  const navigate = useNavigate();
+  const auth = useAuth();
   return (
     <div className="register-page">
       {errorMsg ? <p className="error-message">{errorMsg}</p> : null}
@@ -32,32 +34,12 @@ export default function RegisterForm({ setFormType }: IProps) {
         initialValues={initialFormValues}
         validationSchema={registerFormValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          // TODO: Handle form submission
-          console.log(values);
           if (errorMsg) setErrorMsg("");
           try {
-            const res = await fetch(`${apiURL}/register`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(values),
-              credentials: "include",
-            });
-            console.log(res);
-            if (res.status === 200) {
-              // on success, redirect to user's page
-              // const res2 = await fetch(`${apiURL}/check-auth`, {
-              //   credentials: "include",
-              // });
-              // console.log(await res2.text());
-            } else if (res.status === 400) {
-              const { error } = await res.json();
-              setErrorMsg(error.msg);
-            } else {
-              setErrorMsg("Somwthing wrong happend! Please try again later!");
-            }
+            await auth.register(values);
+            navigate("/profile");
           } catch (error: any) {
-            console.error("An unexpected error happened occurred:", error);
-            setErrorMsg("Something wrong happend. Please try again later!");
+            setErrorMsg(error);
           }
           setSubmitting(false);
         }}
