@@ -7,6 +7,7 @@ import {
   getUserByStudentNum,
   getUserByEmail,
   registerAlumni,
+  insertCertificate,
 } from "./../dbQueries";
 import db from "./../db";
 import { registerFormValidationBackendSchema } from "./../../common/validation";
@@ -183,9 +184,8 @@ router.post("/register", async (req, res, next) => {
     salt,
   });
 
-  // TODO: Create certificate for the new alumni
-  // ...
-  // ...
+  // Create certificate for the new alumni
+  const info2 = insertCertificate(studentnum);
 
   // authenticate user after register
   passport.authenticate(

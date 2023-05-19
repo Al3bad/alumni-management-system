@@ -93,9 +93,7 @@ export const getUserByEmail = (email: string) => {
   }
 };
 
-// Insert new alumni (by admins)
-
-// Update alumni record (when alumni register)
+// Insert new alumni
 export const registerAlumni = ({
   studentnum,
   fname,
@@ -135,20 +133,23 @@ export const registerAlumni = ({
   }
 };
 
-// Get alumni record (for profile page)
+// TODO: Move logic for "Getting alumni record" from passport straticty block to here
 
 // ==============================================
 // ==> Certificate Queries
 // ==============================================
 
 // Insert new certificate (by admin)
-export const insertCertificate = () => {
+export const insertCertificate = (studentnum: number) => {
   try {
     // TODO:
-    const stmt = db.prepare(``);
-    const info = stmt.run();
+    const stmt = db.prepare(
+      `INSERT INTO certificate (issuedate, studentnum) VALUES (DATE(CURRENT_DATE), ?)`
+    );
+    const info = stmt.run(studentnum);
+    return info;
   } catch (err) {
-    console.log(`[ERROR] insertCertificate function`);
+    console.log(`[ERROR] insert Certificate function`);
   }
 };
 
