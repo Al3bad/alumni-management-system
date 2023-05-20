@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/authCtx";
+import "./AlumniProfile.scss";
 
 //===============================================
 // ==> Component
@@ -25,21 +26,32 @@ export default function AlumniProfile() {
     navigate("/", { replace: true });
   };
 
+  const docList = auth.user.docs.map((docObj: any) => {
+    return (
+      <li>
+        <span>Certificate [ID: {docObj.certID}]</span>
+        {docObj.link ? <button className="">download</button> : null}
+      </li>
+    );
+  });
+
   return (
     <div className="alumni-profile-page">
-      <p>
-        Welcome {auth.user.fname} {auth.user.lname}!{" "}
-        <button onClick={logout}>Sign Out</button>
-      </p>
-      <div className="doc-list">
-        <ul>
-          <li>
-            <span>Certificate [hardcoded]</span> <a>download</a>
-          </li>
-          <li>
-            <span>Transcript [hardcoded]</span> <a>download</a>
-          </li>
-        </ul>
+      <div className="container">
+        <div className="profile">
+          <div className="avatar"></div>
+          <div className="info">
+            <div className="name">
+              {auth.user.info.fname} {auth.user.info.lname}
+            </div>
+            <div className="student-id">s{auth.user.info.studentnum}</div>
+          </div>
+          <button className="secondary-btn" onClick={logout}>
+            LOGOUT
+          </button>
+        </div>
+        <hr />
+        <ul className="doc-list">{docList}</ul>
       </div>
     </div>
   );

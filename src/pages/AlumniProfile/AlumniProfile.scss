@@ -1,0 +1,79 @@
+@import "./../../scss/button";
+@import "./../../scss/variables";
+
+.alumni-profile-page {
+  min-height: calc(100vh - 10rem);
+  margin: auto;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .container {
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    padding: 2rem;
+    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.1);
+    .profile {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+      .avatar {
+        display: inline-block;
+        width: 4rem;
+        height: 4rem;
+        border-radius: 5px;
+        background: $gray-400;
+      }
+      .info {
+        flex-grow: 1;
+        padding: 0.4rem;
+        .name {
+          padding-bottom: 0.2rem;
+          font-size: 1.2rem;
+          font-weight: bold;
+        }
+        .student-id {
+          font-size: 1rem;
+          font-weight: normal;
+        }
+      }
+    }
+    .doc-list {
+      width: 100%;
+      list-style: none;
+      li {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+        border-radius: 5px;
+        background: $gray-100;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        &:hover {
+          background: $gray-300;
+        }
+        button {
+          background: none;
+          border: none;
+          color: $primary-color;
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+    }
+    hr {
+      width: 100%;
+      margin: 1rem 0;
+      margin-bottom: 2rem;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+  }
+}

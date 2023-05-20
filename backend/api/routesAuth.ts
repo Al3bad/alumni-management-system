@@ -8,6 +8,7 @@ import {
   getUserByEmail,
   registerAlumni,
   insertCertificate,
+  getAlumniDocs,
 } from "./../dbQueries";
 import db from "./../db";
 import { registerFormValidationBackendSchema } from "./../../common/validation";
@@ -17,7 +18,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     export interface User {
-      studentnum: string;
+      studentnum: number;
       fname: string;
       lname: string;
     }
@@ -102,7 +103,18 @@ const router = Router();
 // ==============================================
 router.get("/user", checkAuth, (req, res) => {
   console.log(req.user);
-  res.json({ user: req.user });
+  if (req.user?.studentnum) {
+    const docs = getAlumniDocs(req.user.studentnum);
+    console.log(docs);
+    res.json({ user: req.user, docs });
+  } else {
+    res.statusCode = 404;
+    return res.json({
+      error: {
+        msg: "User not found!",
+      },
+    });
+  }
 });
 
 // ==============================================

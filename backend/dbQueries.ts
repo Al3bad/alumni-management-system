@@ -93,6 +93,27 @@ export const getUserByEmail = (email: string) => {
   }
 };
 
+export const getAlumniDocs = (studentnum: number) => {
+  try {
+    const stmt = db.prepare(
+      `
+      SELECT SUBSTR(strftime('%Y', c.issuedate), 3) || PRINTF('%07d',c.id)
+              AS "docID",
+          c.issuedate
+              AS "issueDate"
+      FROM certificate c
+      JOIN alumni a
+          ON c.studentnum = a.studentnum
+      WHERE a.studentnum = ?;
+      `
+    );
+    const docs = stmt.all(studentnum);
+    return docs;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // Insert new alumni
 export const registerAlumni = ({
   studentnum,

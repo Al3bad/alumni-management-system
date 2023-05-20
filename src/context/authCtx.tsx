@@ -52,8 +52,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       if (res.status === 200) {
         const resJson = await res.json();
-        setUser(resJson.user);
-        return resJson.user;
+        setUser(resJson);
+        return resJson;
       } else {
         throw "Invalid email or password!";
       }
@@ -86,8 +86,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         // on success, redirect to user's page
         const resJson = await res.json();
         console.log("User", resJson);
-        setUser(resJson.user);
-        return resJson.user;
+        setUser({ info: resJson.user, docs: resJson.docs });
+        return resJson;
       } else {
         throw "Unauthorised!";
       }
