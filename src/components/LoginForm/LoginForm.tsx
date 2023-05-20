@@ -11,8 +11,6 @@ import "./LoginForm.scss";
 
 interface IProps {
   setFormType: (formType: string) => void;
-  user: any;
-  setUser: any;
 }
 
 const initialFormValues = {
@@ -32,8 +30,13 @@ export default function LoginForm({ setFormType }: IProps) {
         validationSchema={loginFormValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            await auth.login(values);
-            navigate("/profile");
+            const user = await auth.login(values);
+            if (user.role === "student") navigate("/alumni");
+            else if (user.role === "admin") navigate("/admin");
+            else
+              console.log(
+                "Something wrong happend! Couldn't figure out the role after the registeration process!"
+              );
           } catch (error: any) {
             setErrorMsg(error);
           }

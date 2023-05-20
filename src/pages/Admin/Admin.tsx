@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/authCtx";
-import "./AlumniProfile.scss";
+import "./Admin.scss";
 
 //===============================================
 // ==> Component
 //===============================================
-export default function AlumniProfile() {
+export default function Admin() {
   const navigate = useNavigate();
   const auth = useAuth();
 
@@ -19,27 +19,16 @@ export default function AlumniProfile() {
   }, []);
 
   if (!auth.user) return <p>Loading ...</p>;
-  else if (auth.user.info.role === "admin")
-    navigate("/admin", { replace: true });
+  else if (auth.user.info.role === "student")
+    navigate("/alumni", { replace: true });
 
   const logout = () => {
     auth.logout();
     navigate("/", { replace: true });
   };
 
-  const docList = auth.user.docs.map((docObj: any, idx: number) => {
-    return (
-      <li key={idx}>
-        <span>
-          {docObj.docType} [ID: {docObj.docID}]
-        </span>
-        {docObj.link ? <button className="">download</button> : null}
-      </li>
-    );
-  });
-
   return (
-    <div className="alumni-profile-page">
+    <div className="admin-profile-page">
       <div className="container">
         <div className="profile">
           <div className="avatar"></div>
@@ -47,32 +36,15 @@ export default function AlumniProfile() {
             <div className="name">
               {auth.user.info.fname} {auth.user.info.lname}
             </div>
-            <div className="student-id">s{auth.user.info.id}</div>
+            <div className="student-id">a{auth.user.info.id}</div>
           </div>
           <button className="secondary-btn" onClick={logout}>
             LOGOUT
           </button>
         </div>
         <hr />
-        <ul className="doc-list">{docList}</ul>
+        {/* <ul className="doc-list">{docList}</ul> */}
       </div>
     </div>
   );
 }
-
-// const AuthStatus = () => {
-//   const auth = useAuth();
-//   // const navigate = useNavigate(); for redirection
-//
-//   const logout = () => {
-//     console.log("TODO: call /api/logout");
-//   };
-//
-//   if (!auth.user) return <p>Please login! [TODO: redirect to home page]</p>;
-//
-//   return (
-//     <p>
-//       Welcome {auth.user}! <button onClick={logout}>Sign Out</button>
-//     </p>
-//   );
-// };

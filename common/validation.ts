@@ -39,8 +39,8 @@ export const ausMobileValidator = Yup.string()
 //===============================================
 export const registerFormValidationSchema = Yup.object({
   studentID: studentIDValidator,
-  fname: Yup.string().required("Required"),
-  lname: Yup.string().required("Required"),
+  // fname: Yup.string().required("Required"),
+  // lname: Yup.string().required("Required"),
   email: emailValidator,
   mobile: ausMobileValidator,
   password: strongPasswordValidator,
@@ -49,8 +49,8 @@ export const registerFormValidationSchema = Yup.object({
 
 export const registerFormValidationBackendSchema = Yup.object({
   studentID: studentIDValidator,
-  fname: Yup.string().required("Required"),
-  lname: Yup.string().required("Required"),
+  // fname: Yup.string().required("Required"),
+  // lname: Yup.string().required("Required"),
   email: emailValidator,
   mobile: ausMobileValidator,
   password: strongPasswordValidator,

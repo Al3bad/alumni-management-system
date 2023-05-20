@@ -9,13 +9,7 @@ import "./Home.scss";
 //===============================================
 // ==> Component
 //===============================================
-interface IProps {
-  // setFormType: (formType: string) => void;
-  user: any;
-  setUser: any;
-}
-
-export default function Home({ user, setUser }: IProps) {
+export default function Home() {
   const [formType, setFormType] = useState<string>("");
   return (
     <div className="home-page">
@@ -24,13 +18,13 @@ export default function Home({ user, setUser }: IProps) {
         <h1>Alumni Managment System</h1>
         <hr />
         {formType === "login" ? (
-          <LoginForm user={user} setUser={setUser} setFormType={setFormType} />
+          <LoginForm setFormType={setFormType} />
         ) : formType === "register" ? (
           <RegisterForm setFormType={setFormType} />
         ) : formType === "verify" ? (
           <VerifyForm setFormType={setFormType} />
         ) : (
-          <ButtonList user={user} setFormType={setFormType} />
+          <ButtonList setFormType={setFormType} />
         )}
       </div>
     </div>

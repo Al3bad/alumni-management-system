@@ -4,8 +4,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { checkAuth } from "./../middlewares";
 import {
-  getUserByStudentNum,
-  getUserByEmail,
+  getUser,
   registerAlumni,
   insertCertificate,
   getAlumniDocs,
@@ -18,20 +17,22 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     export interface User {
-      studentnum: number;
+      id: number;
       fname: string;
       lname: string;
+      role: string;
     }
   }
 }
 
-type AlumniUser = {
-  studentnum: number;
+type User = {
+  id: number;
   fname: string;
   lname: string;
   email?: string | undefined;
   password?: string | undefined;
   salt?: string | undefined;
+  role: string;
 };
 
 // ==============================================
@@ -53,8 +54,8 @@ passport.use(
             "sha256"
           )
           .toString("hex");
-        const stmt = db.prepare("SELECT * FROM alumni WHERE email = ?");
-        const user: AlumniUser | any = stmt.get(hashedEmail);
+        const stmt = db.prepare("SELECT * FROM user WHERE email = ?");
+        const user: User | any = stmt.get(hashedEmail);
         console.log(username, hashedEmail);
         // Check user existance
         const isRegistered = user && (!user?.email || !user?.salt);
@@ -71,9 +72,10 @@ passport.use(
           return cb(null, false, { message: "Incorrect username or password" });
         // Valid credential
         return cb(null, {
-          studentnum: user.studentnum,
+          id: user.id,
           fname: user.fname,
           lname: user.lname,
+          role: user.role,
         });
       } catch (err) {
         return cb(err);
@@ -102,11 +104,34 @@ const router = Router();
 // ==> Get Info of Authenticated Alumni
 // ==============================================
 router.get("/user", checkAuth, (req, res) => {
+  if (req.user?.id) {
+    if (req.user.role === "student") {
+      const docs = getAlumniDocs(req.user.id);
+      res.json({ info: req.user, docs });
+    } else if (req.user.role === "admin") {
+      res.json({ info: req.user });
+    } else {
+      res.statusCode = 500;
+      return res.json({
+        error: {
+          msg: "Something wrong happend!",
+        },
+      });
+    }
+  } else {
+    res.statusCode = 404;
+    return res.json({
+      error: {
+        msg: "User not found!",
+      },
+    });
+  }
+});
+
+router.get("/admin", checkAuth, (req, res) => {
   console.log(req.user);
-  if (req.user?.studentnum) {
-    const docs = getAlumniDocs(req.user.studentnum);
-    console.log(docs);
-    res.json({ user: req.user, docs });
+  if (req.user?.id) {
+    res.json({ user: req.user });
   } else {
     res.statusCode = 404;
     return res.json({
@@ -127,7 +152,7 @@ router.post("/register", async (req, res, next) => {
   // Vallidate input
   const isValid = await registerFormValidationBackendSchema.isValid(req.body);
   console.log(`Form data is ${isValid ? "valid" : "invalid"}!`);
-  const { studentID, fname, lname, email, mobile, password } = req.body;
+  const { studentID, email, mobile, password } = req.body;
 
   // form data is not valid?
   //    res with bad req
@@ -141,15 +166,15 @@ router.post("/register", async (req, res, next) => {
   }
 
   const studentnum = parseInt(studentID.slice(1));
-  const alumniUser: any = getUserByStudentNum(studentnum);
+  const alumniUser: any = getUser(studentnum);
   // Check if the user is already in the system
-  // Alumni found using the provided student number?
+  // Alumni not found using the provided student number?
   //    res with bad req
-  if (alumniUser) {
+  if (!alumniUser) {
     res.statusCode = 400;
     return res.json({
       error: {
-        msg: "Alumni already exists in the system! Please login using your email and password!",
+        msg: "No alumni found in the system with the provided student ID!",
       },
     });
   }
@@ -169,7 +194,7 @@ router.post("/register", async (req, res, next) => {
   // Check if the eamil already used
   // Alumni tries to register with an already existing email?
   //    res with bad req
-  if (!alumniUser && getUserByEmail(email)) {
+  if (alumniUser && alumniUser.email) {
     res.statusCode = 400;
     return res.json({
       error: {
@@ -184,20 +209,17 @@ router.post("/register", async (req, res, next) => {
   const hashedPassword = crypto
     .pbkdf2Sync(password, salt, iterations, keyLength, "sha256")
     .toString("hex");
-  console.log(hashedEmail, hashedMobile, hashedPassword, salt);
   // Store the user in the db
   const info = registerAlumni({
     studentnum,
-    fname,
-    lname,
     email: hashedEmail,
     mobile: hashedMobile,
     password: hashedPassword,
     salt,
   });
 
-  // Create certificate for the new alumni
-  const info2 = insertCertificate(studentnum);
+  // TODO: Create certificate for the new alumni (this should be done by the admin user)
+  // const info2 = insertCertificate(studentnum);
 
   // authenticate user after register
   passport.authenticate(
@@ -217,11 +239,17 @@ router.post("/register", async (req, res, next) => {
     }
   )(req, res, next);
 
-  // authenticate user after register
-  res.statusCode = 200;
-  return res.json({
-    user: req.user,
-  });
+  if (req.user?.id) {
+    // authenticate user after register
+    res.statusCode = 200;
+    res.json({ user: req.user });
+  } else {
+    return res.json({
+      error: {
+        msg: "Something wrong happend in the server!",
+      },
+    });
+  }
 });
 
 // ==============================================
@@ -232,7 +260,6 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
   if (req.isAuthenticated()) {
     console.log(`Logged in user:`, req.user);
     return res.json({
-      statusCode: 200,
       user: req.user,
     });
   }

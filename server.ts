@@ -17,7 +17,7 @@ import express from "express";
 import passport from "passport";
 import api from "./backend/api";
 import { cors, session } from "./backend/middlewares";
-import { createAlumniTable, createCertificateTable } from "./backend/dbQueries";
+import { createUserTable, createDocumentTable } from "./backend/dbQueries";
 
 // ==============================================
 // ==> Prepare App
@@ -61,8 +61,8 @@ app.listen(port, async () => {
   //   await resetDB();
   //   seedDB();
   // }
-  createAlumniTable();
-  createCertificateTable();
+  createUserTable();
+  createDocumentTable();
   console.log(
     `Server is running on port ${port} in ${
       process.env.NODE_ENV || "development"

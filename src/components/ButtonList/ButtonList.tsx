@@ -3,18 +3,14 @@
 //===============================================
 interface IProps {
   setFormType: (formType: string) => void;
-  user: any;
 }
 
-export default function ButtonList({ setFormType, user }: IProps) {
-  console.log(user);
+export default function ButtonList({ setFormType }: IProps) {
   return (
     <div className="btn-list">
-      {!user ? (
-        <button className="primary-btn" onClick={() => setFormType("login")}>
-          Login
-        </button>
-      ) : null}
+      <button className="primary-btn" onClick={() => setFormType("login")}>
+        Login
+      </button>
       <button className="secondary-btn" onClick={() => setFormType("register")}>
         Register
       </button>

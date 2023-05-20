@@ -14,13 +14,13 @@ interface IProps {
 }
 
 const initialFormValues = {
-  studentID: "",
-  fname: "",
-  lname: "",
-  email: "",
-  mobile: "",
-  password: "",
-  passwordConfirm: "",
+  studentID: "s3635950",
+  // fname: "",
+  // lname: "",
+  email: "abdullah@alabbad.dev",
+  mobile: "0400000000",
+  password: "asdASD123!@#",
+  passwordConfirm: "asdASD123!@#",
 };
 
 export default function RegisterForm({ setFormType }: IProps) {
@@ -36,8 +36,12 @@ export default function RegisterForm({ setFormType }: IProps) {
         onSubmit={async (values, { setSubmitting }) => {
           if (errorMsg) setErrorMsg("");
           try {
-            await auth.register(values);
-            navigate("/profile");
+            const user = await auth.register(values);
+            if (user.role === "student") navigate("/alumni");
+            else
+              console.log(
+                "Something wrong happend! Couldn't figure out the role after the registeration process!"
+              );
           } catch (error: any) {
             setErrorMsg(error);
           }
@@ -52,18 +56,18 @@ export default function RegisterForm({ setFormType }: IProps) {
               type="text"
               placeholder="e.g. s1234567"
             />
-            <TextInput
-              label="First Name"
-              name="fname"
-              type="text"
-              placeholder=""
-            />
-            <TextInput
-              label="Last Name"
-              name="lname"
-              type="text"
-              placeholder=""
-            />
+            {/* <TextInput */}
+            {/*   label="First Name" */}
+            {/*   name="fname" */}
+            {/*   type="text" */}
+            {/*   placeholder="" */}
+            {/* /> */}
+            {/* <TextInput */}
+            {/*   label="Last Name" */}
+            {/*   name="lname" */}
+            {/*   type="text" */}
+            {/*   placeholder="" */}
+            {/* /> */}
             <TextInput
               label="Email Address"
               name="email"

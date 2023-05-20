@@ -1,8 +1,4 @@
-import fs from "node:fs/promises";
-import crypto from "node:crypto";
 import db from "./db";
-
-const backendDir = `${__dirname}`;
 
 // ==============================================
 // ==> Interfaces
@@ -31,30 +27,34 @@ interface CertificateData {
 // ==============================================
 // ==> Init DB
 // ==============================================
-export const createAlumniTable = () => {
+
+export const createUserTable = () => {
   try {
-    const stmt = db.prepare(`CREATE TABLE IF NOT EXISTS alumni (
-                                studentnum INTEGER PRIMARY KEY,
+    const stmt = db.prepare(`CREATE TABLE IF NOT EXISTS user (
+                                id INTEGER PRIMARY KEY,
                                 fname TEXT NOT NULL,
                                 lname TEXT NOT NULL,
-                                email TEXT,
-                                password TEXT,
-                                salt TEXT
+                                email TEXT NOT NULL,
+                                mobile TEXT NOT NULL,
+                                password TEXT NOT NULL,
+                                salt TEXT NOT NULL,
+                                role TEXT NOT NULL
                             )`);
     const info = stmt.run();
     console.log(info);
   } catch (err) {
-    console.log("[ERROR] createAlumniTable function!");
+    console.log("[ERROR] createUserTable function!");
   }
 };
 
-export const createCertificateTable = () => {
+export const createDocumentTable = () => {
   try {
-    const stmt = db.prepare(`CREATE TABLE IF NOT EXISTS certificate (
+    const stmt = db.prepare(`CREATE TABLE IF NOT EXISTS document (
                                 id INTEGER NOT NULL UNIQUE PRIMARY KEY,
+                                type TEXT NOT NULL,
                                 issuedate TEXT NOT NULL,
                                 studentnum INTEGER,
-                                FOREIGN KEY (studentnum) REFERENCES alumni(studentnum)
+                                FOREIGN KEY (studentnum) REFERENCES user(id)
                             )`);
     const info = stmt.run();
     console.log(info);
@@ -64,47 +64,104 @@ export const createCertificateTable = () => {
 };
 
 // ==============================================
+// ==> Search User Queries
+// ==============================================
+// Get user by either email or id
+export const getUser = (value: number | string) => {
+  let attribute = "id";
+  if (typeof value === "string") attribute = "email";
+  try {
+    const stmt = db.prepare(
+      `SELECT id, email, fname, lname, role FROM user WHERE ${attribute} = ?`
+    );
+    const user = stmt.get(value);
+    return user;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// ==============================================
 // ==> Alumni Queries
 // ==============================================
-
-// Get user by studentnum
-export const getUserByStudentNum = (studentnum: number) => {
+export const insertAdmin = ({
+  id,
+  fname,
+  lname,
+  email,
+  mobile,
+  password,
+  salt,
+}: {
+  id: number;
+  fname: string;
+  lname: string;
+  email: string;
+  mobile: string;
+  password: string;
+  salt: string;
+}) => {
   try {
-    const stmt = db.prepare(
-      "SELECT studentnum, email, fname, lname FROM alumni WHERE studentnum = ?"
-    );
-    const user = stmt.get(studentnum);
-    return user;
+    const query = `
+      INSERT INTO user
+        (id, fname, lname, email, mobile, password, salt, role)
+      VALUES
+        (?,?,?,?,?,?,?,?)`;
+    // Insert new alumni
+    const info = db
+      .prepare(query)
+      .run(id, fname, lname, email, mobile, password, salt, "admin");
+    return info;
   } catch (err) {
     console.log(err);
   }
 };
 
-// Get user by email
-export const getUserByEmail = (email: string) => {
+export const getAllAlumni = () => {
   try {
     const stmt = db.prepare(
-      "SELECT studentnum, email, fname, lname FROM alumni WHERE email = ?"
+      `SELECT id, fname, lname, TYPEOF(email) == 'text' AS is_registered FROM user WHERE role = 'student'`
     );
-    const user = stmt.get(email);
-    return user;
+    const allAlumni = stmt.all();
+    return allAlumni;
   } catch (err) {
     console.log(err);
   }
 };
+
+export const getAlumniDetails = (studentnum: number) => {
+  try {
+    const stmt = db.prepare(`
+                    SELECT d.id, d.type, d.issuedate
+                    FROM user u
+                    JOIN document d
+                        ON u.id = d.studentnum
+                    WHERE u.id = ?`);
+    const alumniDetails = stmt.all(studentnum);
+    return alumniDetails;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// ==============================================
+// ==> Alumni Queries
+// ==============================================
 
 export const getAlumniDocs = (studentnum: number) => {
   try {
     const stmt = db.prepare(
       `
-      SELECT SUBSTR(strftime('%Y', c.issuedate), 3) || PRINTF('%07d',c.id)
-              AS "docID",
-          c.issuedate
-              AS "issueDate"
-      FROM certificate c
-      JOIN alumni a
-          ON c.studentnum = a.studentnum
-      WHERE a.studentnum = ?;
+      SELECT SUBSTR(strftime('%Y', d.issuedate), 3) || PRINTF('%07d',d.id)
+            AS "docID",
+          d.type
+            AS "docType",
+          d.issuedate
+            AS "issueDate"
+      FROM document d
+      JOIN user u
+          ON d.studentnum = u.id
+      WHERE u.id = ?;
       `
     );
     const docs = stmt.all(studentnum);
@@ -115,10 +172,44 @@ export const getAlumniDocs = (studentnum: number) => {
 };
 
 // Insert new alumni
-export const registerAlumni = ({
+export const insertAlumniWithCert = ({
   studentnum,
   fname,
   lname,
+}: {
+  studentnum: number;
+  fname: string;
+  lname: string;
+}) => {
+  try {
+    const query = `
+      INSERT INTO user
+        (id, fname, lname, role)
+      VALUES
+        (?,?,?,?)`;
+    const query2 = `
+      INSERT INTO document
+        (type, issuedate, studentnum)
+      VALUES
+        ('certificate', DATE(CURRENT_DATE), ?)`;
+    let info: any = {};
+    db.transaction((_) => {
+      // Insert new alumni
+      info.newAlumniInfo = db
+        .prepare(query)
+        .run(studentnum, fname, lname, "student");
+      // Insert new certificate
+      info.newCertInfo = db.prepare(query2).run(studentnum);
+    })([{}]);
+    return info;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// Register new alumni
+export const registerAlumni = ({
+  studentnum,
   email,
   mobile,
   password,
@@ -126,28 +217,17 @@ export const registerAlumni = ({
 }: {
   studentnum: number;
   email: string;
-  fname: string;
-  lname: string;
   mobile: string;
   password: string;
   salt: string;
 }) => {
   try {
     const query = `
-      INSERT INTO alumni
-        (studentnum, fname, lname, email, mobile, password, salt)
-      VALUES
-        (?,?,?,?,?,?,?)`;
+      UPDATE user
+      SET email = ?, mobile = ?, password = ?, salt = ?
+      WHERE id = ?`;
     const stmt = db.prepare(query);
-    const info = stmt.run(
-      studentnum,
-      fname,
-      lname,
-      email,
-      mobile,
-      password,
-      salt
-    );
+    const info = stmt.run(email, mobile, password, salt, studentnum);
     return info;
   } catch (err) {
     console.log(err);
