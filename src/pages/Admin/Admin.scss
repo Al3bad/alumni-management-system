@@ -43,12 +43,13 @@
         }
       }
     }
-    .doc-list {
+    .alumni-list {
       width: 100%;
       list-style: none;
       li {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         margin-bottom: 1rem;
         padding: 0.8rem;
         border-radius: 5px;
@@ -59,12 +60,21 @@
         &:hover {
           background: $gray-300;
         }
-        button {
-          background: none;
-          border: none;
-          color: $primary-color;
-          cursor: pointer;
-          text-decoration: underline;
+        .status {
+          width: 0.7rem;
+          height: 0.7rem;
+          border-radius: 50%;
+          // transform: scale(1);
+          // transition: 0.3s ease-in-out;
+          // &:hover {
+          //   transform: scale(1.7);
+          // }
+        }
+        .green {
+          background: $green-color;
+        }
+        .red {
+          background: $red-color;
         }
       }
     }
@@ -76,4 +86,42 @@
       border-top: 1px solid #ddd;
     }
   }
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: $primary-color;
+  color: #fff;
+  text-align: center;
+  padding: 5px 1rem;
+  border-radius: 4px;
+  transform: translate(-45%, -2.8rem);
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  opacity: 0.8;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: $primary-color transparent transparent transparent;
 }

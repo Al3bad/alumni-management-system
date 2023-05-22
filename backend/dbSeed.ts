@@ -66,18 +66,6 @@ const iterations = 310000;
 const keyLength = 32;
 
 adminData.forEach((data) => {
-  const hashedEmail = crypto
-    .pbkdf2Sync(
-      data.email,
-      process.env.EMAIL_SALT || "303858f99ea838d56e08d4e2578a2314",
-      iterations,
-      keyLength,
-      "sha256"
-    )
-    .toString("hex");
-  const hashedMobile = crypto
-    .pbkdf2Sync(data.mobile, salt, iterations, keyLength, "sha256")
-    .toString("hex");
   const hashedPassword = crypto
     .pbkdf2Sync(data.password, salt, iterations, keyLength, "sha256")
     .toString("hex");
@@ -86,8 +74,8 @@ adminData.forEach((data) => {
     id: data.id,
     fname: data.fname,
     lname: data.lname,
-    email: hashedEmail,
-    mobile: hashedMobile,
+    email: data.email,
+    mobile: data.mobile,
     password: hashedPassword,
     salt,
   });
@@ -104,26 +92,14 @@ alumniData.forEach((data) => {
 });
 
 alumniRegisterData.forEach((data) => {
-  const hashedEmail = crypto
-    .pbkdf2Sync(
-      data.email,
-      process.env.EMAIL_SALT || "303858f99ea838d56e08d4e2578a2314",
-      iterations,
-      keyLength,
-      "sha256"
-    )
-    .toString("hex");
-  const hashedMobile = crypto
-    .pbkdf2Sync(data.mobile, salt, iterations, keyLength, "sha256")
-    .toString("hex");
   const hashedPassword = crypto
     .pbkdf2Sync(data.password, salt, iterations, keyLength, "sha256")
     .toString("hex");
   // Store the user in the db
   const _ = registerAlumni({
     studentnum: data.studentnum,
-    email: hashedEmail,
-    mobile: hashedMobile,
+    email: data.email,
+    mobile: data.mobile,
     password: hashedPassword,
     salt,
   });

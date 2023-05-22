@@ -17,7 +17,7 @@ const initialFormValues = {
   studentID: "s3635950",
   // fname: "",
   // lname: "",
-  email: "abdullah@alabbad.dev",
+  email: "alumni@rmit.com",
   mobile: "0400000000",
   password: "asdASD123!@#",
   passwordConfirm: "asdASD123!@#",

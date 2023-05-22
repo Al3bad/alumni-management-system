@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/authCtx";
+import { getAlumniData } from "../../lib/req";
 import "./Admin.scss";
+import AlumniDetailsModal from "../../components/AlumniDetailsModal/AlumniDetailsModal";
 
 //===============================================
 // ==> Component
@@ -10,12 +12,22 @@ export default function Admin() {
   const navigate = useNavigate();
   const auth = useAuth();
 
+  const [allAlumni, setAllAlumni] = useState([]);
+  const [selectedAlumni, setSelectedAlumni] = useState<number | null>(null);
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     const user = async () => {
       return await auth.getUser();
     };
 
+    const getAlumni = async () => {
+      const allAlumniData = await getAlumniData();
+      setAllAlumni(allAlumniData);
+    };
+
     user().catch(() => navigate("/", { replace: true }));
+    getAlumni().catch((_: any) => {});
   }, []);
 
   if (!auth.user) return <p>Loading ...</p>;
@@ -27,8 +39,39 @@ export default function Admin() {
     navigate("/", { replace: true });
   };
 
+  const onAlumniRecordClicked = (studentID: number) => {
+    setSelectedAlumni(studentID);
+    setShowModal(true);
+  };
+
+  const alumniList = allAlumni.map((alumniData: any, idx: number) => {
+    return (
+      <li key={idx} onClick={() => onAlumniRecordClicked(alumniData.id)}>
+        <span>
+          {alumniData.id} - {alumniData.fname} {alumniData.lname}
+        </span>
+        <div
+          className={`tooltip status ${
+            alumniData.is_registered ? "green" : "red"
+          }`}
+        >
+          <span className="tooltiptext">
+            {alumniData.is_registered ? "registered" : "unregistered"}
+          </span>
+        </div>
+      </li>
+    );
+  });
+
   return (
     <div className="admin-profile-page">
+      <AlumniDetailsModal
+        studentID={selectedAlumni}
+        showModal={showModal}
+        setShowModal={setShowModal}
+        onSubmit={() => {}}
+        onCancel={() => setShowModal(false)}
+      />
       <div className="container">
         <div className="profile">
           <div className="avatar"></div>
@@ -43,7 +86,7 @@ export default function Admin() {
           </button>
         </div>
         <hr />
-        {/* <ul className="doc-list">{docList}</ul> */}
+        <ul className="alumni-list">{alumniList}</ul>
       </div>
     </div>
   );

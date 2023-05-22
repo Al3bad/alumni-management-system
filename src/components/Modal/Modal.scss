@@ -1,0 +1,71 @@
+@import "./../../scss/variables";
+
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: $dark-color;
+  opacity: 0.5;
+}
+
+.modal-container {
+  min-width: 52rem;
+  max-width: 52rem;
+  padding: 2.4rem;
+  border-radius: 5px;
+  background: $white-color;
+  z-index: 3;
+}
+
+.modal__title {
+  font-weight: bold;
+  font-size: 1.8rem;
+}
+
+.modal__title::after {
+  content: "";
+  display: block;
+  left: 0;
+  right: 0;
+  height: 1px;
+  margin: 2rem 0;
+  background: $gray-200;
+}
+
+.modal__body {
+  margin: 3rem 0;
+}
+
+.modal__body-empty {
+  color: $gray-300;
+}
+
+.modal__controls {
+  text-align: right;
+}
+
+.modal__controls button:not(:last-child) {
+  margin-right: 1rem;
+}
+
+@media only screen and (max-width: 420px) {
+  .modal-container {
+    width: 95vw;
+    min-width: initial;
+    max-width: initial;
+  }
+}

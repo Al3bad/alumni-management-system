@@ -45,18 +45,8 @@ passport.use(
       try {
         const iterations = 310000;
         const keyLength = 32;
-        const hashedEmail = crypto
-          .pbkdf2Sync(
-            username,
-            process.env.EMAIL_SALT || "303858f99ea838d56e08d4e2578a2314",
-            iterations,
-            keyLength,
-            "sha256"
-          )
-          .toString("hex");
         const stmt = db.prepare("SELECT * FROM user WHERE email = ?");
-        const user: User | any = stmt.get(hashedEmail);
-        console.log(username, hashedEmail);
+        const user: User | any = stmt.get(username);
         // Check user existance
         const isRegistered = user && (!user?.email || !user?.salt);
         if (!user || (user && isRegistered)) {
@@ -105,6 +95,7 @@ const router = Router();
 // ==============================================
 router.get("/user", checkAuth, (req, res) => {
   if (req.user?.id) {
+    console.log("Get data for " + req.user.role + " user!");
     if (req.user.role === "student") {
       const docs = getAlumniDocs(req.user.id);
       res.json({ info: req.user, docs });
@@ -181,15 +172,6 @@ router.post("/register", async (req, res, next) => {
   const salt = crypto.randomBytes(16).toString("hex");
   const iterations = 310000;
   const keyLength = 32;
-  const hashedEmail = crypto
-    .pbkdf2Sync(
-      email,
-      process.env.EMAIL_SALT || "303858f99ea838d56e08d4e2578a2314",
-      iterations,
-      keyLength,
-      "sha256"
-    )
-    .toString("hex");
 
   // Check if the eamil already used
   // Alumni tries to register with an already existing email?
@@ -203,17 +185,14 @@ router.post("/register", async (req, res, next) => {
     });
   }
   // Hash the info
-  const hashedMobile = crypto
-    .pbkdf2Sync(mobile, salt, iterations, keyLength, "sha256")
-    .toString("hex");
   const hashedPassword = crypto
     .pbkdf2Sync(password, salt, iterations, keyLength, "sha256")
     .toString("hex");
   // Store the user in the db
   const info = registerAlumni({
     studentnum,
-    email: hashedEmail,
-    mobile: hashedMobile,
+    email: email,
+    mobile: mobile,
     password: hashedPassword,
     salt,
   });

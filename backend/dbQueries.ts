@@ -129,6 +129,18 @@ export const getAllAlumni = () => {
   }
 };
 
+export const getAlumni = (studentnum: number) => {
+  try {
+    const stmt = db.prepare(
+      `SELECT id, fname, lname, email, mobile, TYPEOF(email) == 'text' AS is_registered FROM user WHERE role = 'student' AND id = ?`
+    );
+    const allAlumni = stmt.get(studentnum);
+    return allAlumni;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const getAlumniDetails = (studentnum: number) => {
   try {
     const stmt = db.prepare(`

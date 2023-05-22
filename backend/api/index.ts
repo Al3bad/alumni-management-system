@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { getCertificate } from "../dbQueries";
+import { getAllAlumni, getAlumni, getCertificate } from "../dbQueries";
 import routersAuth from "./routesAuth";
+import { checkAuth } from "../middlewares";
 
 const api = Router();
 
@@ -11,8 +12,34 @@ api.get("/", (req, res) => {
 
 api.use(routersAuth);
 
-api.post("/login", (req, res) => {
-  res.end("/api/login route is working!");
+// ==============================================
+// ==> Admin role endpoints
+// ==============================================
+
+api.get("/alumni", checkAuth, (req, res) => {
+  if (req.user?.role !== "admin") {
+    res.statusCode = 401;
+    res.json({ msg: "Unauthorized" });
+    return;
+  }
+  const allAlumni = getAllAlumni();
+  return res.json({ data: allAlumni });
+});
+
+api.get("/alumni/:studentnum", checkAuth, (req, res) => {
+  if (req.user?.role !== "admin") {
+    res.statusCode = 401;
+    res.json({ msg: "Unauthorized" });
+    return;
+  }
+  const studentnum = parseInt(req.params.studentnum);
+  if (isNaN(studentnum)) {
+    res.statusCode = 400;
+    res.json({ error: { msg: "Invalid student number!" } });
+    return;
+  }
+  const allAlumni = getAlumni(studentnum);
+  return res.json({ data: allAlumni });
 });
 
 api.post("/verify", (req, res) => {

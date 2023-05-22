@@ -29,7 +29,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (res.status === 200) {
         // on success, redirect to user's page
         const resJson = await res.json();
-        setUser(resJson.user);
+        // setUser(resJson.user);
         return resJson.user;
       } else if (res.status === 400) {
         const { error } = await res.json();
@@ -53,6 +53,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (res.status === 200) {
         const resJson = await res.json();
         // setUser(resJson.user);
+        console.log(resJson.user);
         return resJson.user;
       } else {
         throw "Invalid email or password!";

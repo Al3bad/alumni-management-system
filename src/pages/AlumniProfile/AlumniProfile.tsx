@@ -18,8 +18,9 @@ export default function AlumniProfile() {
     user().catch(() => navigate("/", { replace: true }));
   }, []);
 
+  console.log(auth.user);
   if (!auth.user) return <p>Loading ...</p>;
-  else if (auth.user.info.role === "admin")
+  else if (auth?.user?.info?.role === "admin")
     navigate("/admin", { replace: true });
 
   const logout = () => {
@@ -27,7 +28,7 @@ export default function AlumniProfile() {
     navigate("/", { replace: true });
   };
 
-  const docList = auth.user.docs.map((docObj: any, idx: number) => {
+  const docList = auth.user?.docs?.map((docObj: any, idx: number) => {
     return (
       <li key={idx}>
         <span>
