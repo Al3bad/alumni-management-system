@@ -1,3 +1,4 @@
+@import "./../../scss/button";
 @import "./../../scss/variables";
 
 .modal {
@@ -56,6 +57,13 @@
 
 .modal__controls {
   text-align: right;
+  button {
+    min-width: 8rem;
+  }
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .modal__controls button:not(:last-child) {

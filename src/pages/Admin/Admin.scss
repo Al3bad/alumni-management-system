@@ -46,6 +46,12 @@
     .alumni-list {
       width: 100%;
       list-style: none;
+      .add-alumni-btn {
+        display: block;
+        text-align: center;
+        border: 1px dashed $gray-500;
+        color: $gray-600;
+      }
       li {
         display: flex;
         justify-content: space-between;
@@ -54,6 +60,11 @@
         padding: 0.8rem;
         border-radius: 5px;
         background: $gray-100;
+        cursor: pointer;
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10 and IE 11 */
+        user-select: none; /* Standard syntax */
+        user-select: none;
         &:last-child {
           margin-bottom: 0;
         }

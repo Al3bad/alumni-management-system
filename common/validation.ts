@@ -60,3 +60,9 @@ export const loginFormValidationSchema = Yup.object({
   email: emailValidator,
   password: passwordValidator,
 });
+
+export const addNewAlumniFormValidationSchema = Yup.object({
+  studentID: studentIDValidator,
+  fname: Yup.string().required("Required"),
+  lname: Yup.string().required("Required"),
+});

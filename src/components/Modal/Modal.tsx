@@ -14,6 +14,7 @@ interface IProps {
   cancelStr?: string;
   onSubmit?: () => void;
   onCancel?: () => void;
+  isSubmitting?: boolean;
 }
 
 //===============================================
@@ -29,6 +30,7 @@ const Modal = ({
   onSubmit,
   onCancel,
   maxWidth,
+  isSubmitting,
 }: IProps) => {
   if (!showModal) return null;
   return (
@@ -42,12 +44,16 @@ const Modal = ({
         {(onSubmit || onCancel) && (
           <div className="modal__controls">
             {onSubmit && (
-              <button className="btn" onClick={onSubmit}>
+              <button
+                className="submit-btn primary-btn"
+                disabled={isSubmitting}
+                onClick={onSubmit}
+              >
                 {submitStr || "Submit"}
               </button>
             )}
             {onCancel && (
-              <button className="btn btn-secondary" onClick={onCancel}>
+              <button className="secondary-btn" onClick={onCancel}>
                 {cancelStr || "Cancel"}
               </button>
             )}

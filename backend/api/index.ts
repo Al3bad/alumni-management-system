@@ -4,9 +4,12 @@ import {
   getAlumni,
   getAlumniDocs,
   getCertificate,
+  getUser,
 } from "../dbQueries";
 import routersAuth from "./routesAuth";
 import { checkAuth } from "../middlewares";
+import { insertAlumniWithCert } from "../dbQueries";
+import { addNewAlumniFormValidationSchema } from "./../../common/validation";
 
 const api = Router();
 
@@ -29,6 +32,41 @@ api.get("/alumni", checkAuth, (req, res) => {
   }
   const allAlumni = getAllAlumni();
   return res.json({ data: allAlumni });
+});
+
+api.post("/alumni", checkAuth, async (req, res) => {
+  if (req.user?.role !== "admin") {
+    res.statusCode = 401;
+    res.json({ msg: "Unauthorized" });
+    return;
+  }
+
+  const isValid = await addNewAlumniFormValidationSchema.isValid(req.body);
+  if (!isValid) {
+    res.statusCode = 400;
+    return res.json({
+      error: {
+        msg: "Provided form data is invalid!",
+      },
+    });
+  }
+
+  const { studentID, fname, lname } = req.body;
+  const studentnum = parseInt(studentID.slice(1));
+
+  const alumniUser: any = getUser(studentnum);
+  if (alumniUser) {
+    res.statusCode = 400;
+    return res.json({
+      error: {
+        msg: "There is already exiting record for this alumni!",
+      },
+    });
+  }
+  const info = insertAlumniWithCert({ studentnum, fname, lname });
+  console.log(info);
+  res.statusCode = 201;
+  return res.json({ data: "A new alumni was sucessfully created!" });
 });
 
 api.get("/alumni/:studentnum", checkAuth, (req, res) => {

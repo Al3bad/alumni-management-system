@@ -39,3 +39,30 @@ export const getAlumniDocsData = async (studentID: number) => {
     throw error;
   }
 };
+
+export const addNewAlumniRecord = async (formData: {
+  studentID: string;
+  fname: string;
+  lname: string;
+}) => {
+  console.log(formData);
+  try {
+    const res = await fetch(`${apiURL}/alumni`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+    const resJson = await res.json();
+    if (res.status === 201) {
+      return resJson.data;
+    } else if (resJson.error) {
+      throw resJson.error.msg;
+    } else {
+      console.log("Error occured in addNewAlumniRecord() function!");
+      throw "Somwthing wrong happend! Please try again later!";
+    }
+  } catch (error: any) {
+    throw error;
+  }
+};

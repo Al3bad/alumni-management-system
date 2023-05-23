@@ -4,6 +4,7 @@ import { useAuth } from "../../context/authCtx";
 import { getAlumniData } from "../../lib/req";
 import "./Admin.scss";
 import AlumniDetailsModal from "../../components/AlumniDetailsModal/AlumniDetailsModal";
+import AddNewAlumniModal from "../../components/AddNewAlumniModal/AddNewAlumniModal";
 
 //===============================================
 // ==> Component
@@ -15,15 +16,16 @@ export default function Admin() {
   const [allAlumni, setAllAlumni] = useState([]);
   const [selectedAlumni, setSelectedAlumni] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showAddAlumniModal, setShowAddAlumniModal] = useState(false);
+
+  const getAlumni = async () => {
+    const allAlumniData = await getAlumniData();
+    setAllAlumni(allAlumniData);
+  };
 
   useEffect(() => {
     const user = async () => {
       return await auth.getUser();
-    };
-
-    const getAlumni = async () => {
-      const allAlumniData = await getAlumniData();
-      setAllAlumni(allAlumniData);
     };
 
     user().catch(() => navigate("/", { replace: true }));
@@ -44,12 +46,33 @@ export default function Admin() {
     setShowModal(true);
   };
 
+  const onAddAlumniRecordBtnClicked = () => {
+    onAddAlumniModalClose();
+    setShowAddAlumniModal(true);
+  };
+
   const onModalClose = () => {
-    console.log("Modal Closed!");
     setSelectedAlumni(null);
     setShowModal(false);
   };
 
+  const onAddAlumniModalClose = () => {
+    setSelectedAlumni(null);
+    setShowAddAlumniModal(false);
+    getAlumni();
+  };
+
+  const AddAlumniButton = () => {
+    return (
+      <li
+        key={-1}
+        className="add-alumni-btn"
+        onClick={() => onAddAlumniRecordBtnClicked()}
+      >
+        Add Alumni Record
+      </li>
+    );
+  };
   const alumniList = allAlumni.map((alumniData: any, idx: number) => {
     return (
       <li key={idx} onClick={() => onAlumniRecordClicked(alumniData.id)}>
@@ -78,6 +101,11 @@ export default function Admin() {
         onSubmit={() => {}}
         onCancel={() => onModalClose()}
       />
+      <AddNewAlumniModal
+        showModal={showAddAlumniModal}
+        setShowModal={setShowAddAlumniModal}
+        onCancel={() => onAddAlumniModalClose()}
+      />
       <div className="container">
         <div className="profile">
           <div className="avatar"></div>
@@ -92,7 +120,10 @@ export default function Admin() {
           </button>
         </div>
         <hr />
-        <ul className="alumni-list">{alumniList}</ul>
+        <ul className="alumni-list">
+          <AddAlumniButton />
+          {alumniList}
+        </ul>
       </div>
     </div>
   );
