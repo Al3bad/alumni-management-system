@@ -17,6 +17,8 @@ dist-ssr
 *.sql
 *.sqlite
 *.sqlite3
+/static
+!/static/pdf/
 
 # Editor directories and files
 .vscode/*

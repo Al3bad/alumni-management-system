@@ -1,7 +1,4 @@
-import fs from "node:fs";
-import path from "node:path";
 import { Router } from "express";
-import PDFDocument from "pdfkit";
 import {
   getAllAlumni,
   getAlumni,
@@ -69,17 +66,6 @@ api.post("/alumni", checkAuth, async (req, res) => {
   const certData: any = insertAlumniWithCert({ studentnum, fname, lname });
   console.log(certData);
   // Create the certificate document
-  const pdfDir = path.join(__dirname, "..", "..", "static", "pdf");
-  console.log(pdfDir);
-  const doc = new PDFDocument({ size: "A4", margin: 50 });
-  doc.pipe(fs.createWriteStream(`${pdfDir}/${certData.certID}.pdf`));
-  doc
-    .fontSize(12)
-    .text(`Name: ${certData.fname} ${certData.lname}`)
-    .text(`Degree: ${"Engineering"}`)
-    .text(`Issue Date: ${certData.issuedate}`)
-    .text(`Certificate ID: ${certData.certID}`);
-  doc.end();
   res.statusCode = 201;
   return res.json({ data: "A new alumni was sucessfully created!" });
 });

@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+import PDFDocument from "pdfkit";
 import db from "./db";
 
 // ==============================================
@@ -169,7 +172,9 @@ export const getAlumniDocs = (studentnum: number) => {
           d.type
             AS "docType",
           d.issuedate
-            AS "issueDate"
+            AS "issueDate",
+          '/pdf/'|| SUBSTR(strftime('%Y', d.issuedate), 3) || PRINTF('%07d',d.id) || '.pdf'
+            AS "link"
       FROM document d
       JOIN user u
           ON d.studentnum = u.id
@@ -214,7 +219,7 @@ export const insertAlumniWithCert = ({
       info.newCertInfo = db.prepare(query2).run(studentnum);
     })([{}]);
 
-    const newCertificate = db
+    const certData: any = db
       .prepare(
         `SELECT  SUBSTR(strftime('%Y', d.issuedate), 3) || PRINTF('%07d',d.id)
             AS "certID",
@@ -231,7 +236,20 @@ export const insertAlumniWithCert = ({
         info.newAlumniInfo.lastInsertRowid,
         info.newCertInfo.lastInsertRowid
       );
-    return newCertificate;
+
+    const pdfDir = path.join(__dirname, "..", "static", "pdf");
+    console.log(pdfDir);
+    const doc = new PDFDocument({ size: "A4", margin: 50 });
+    doc.pipe(fs.createWriteStream(`${pdfDir}/${certData.certID}.pdf`));
+    doc
+      .fontSize(12)
+      .text(`Name: ${certData.fname} ${certData.lname}`)
+      .text(`Degree: ${"Engineering"}`)
+      .text(`Issue Date: ${certData.issuedate}`)
+      .text(`Certificate ID: ${certData.certID}`);
+    doc.end();
+
+    return certData;
   } catch (err) {
     console.log(err);
   }
@@ -281,6 +299,27 @@ export const insertCertificate = (studentnum: number) => {
     return info;
   } catch (err) {
     console.log(`[ERROR] insert Certificate function`);
+  }
+};
+
+// Get user id that owns a certificate filename (for download)
+export const getStudentnumByCertFilename = (certFile: string) => {
+  try {
+    const stmt = db.prepare(`
+                            SELECT
+                                u.id AS "studentnum",
+                                SUBSTR(strftime('%Y', d.issuedate), 3) || PRINTF('%07d',d.id) || '.pdf'
+                                    AS "certFile"
+                            FROM document d
+                            JOIN user u
+                                ON d.studentnum = u.id
+                            WHERE "certFile" = ?;
+                          `);
+    const record = stmt.get(certFile);
+    return record;
+  } catch (err) {
+    console.log(`[ERROR] getStudentnumByCertFilename function`);
+    console.log(err);
   }
 };
 

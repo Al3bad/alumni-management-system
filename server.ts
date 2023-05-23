@@ -16,8 +16,12 @@ if (process.env.NODE_ENV === "production") {
 import express from "express";
 import passport from "passport";
 import api from "./backend/api";
-import { cors, session } from "./backend/middlewares";
-import { createUserTable, createDocumentTable } from "./backend/dbQueries";
+import { checkAuth, cors, session } from "./backend/middlewares";
+import {
+  createUserTable,
+  createDocumentTable,
+  getStudentnumByCertFilename,
+} from "./backend/dbQueries";
 
 // ==============================================
 // ==> Prepare App
@@ -41,9 +45,39 @@ app.use(cors);
 // ==============================================
 // ==> Frontend Routes
 // ==============================================
-app.use(express.static(`${__dirname}/dist`));
-app.get("/", (_, res) => {
-  res.sendFile(`${__dirname}/dist/index.html`);
+// app.use(express.static(`${__dirname}/dist`));
+// app.get("/", (_, res) => {
+//   res.sendFile(`${__dirname}/dist/index.html`);
+// });
+
+// ==============================================
+// ==> PDF Routes
+// ==============================================
+app.get("/api/pdf/:certFile", checkAuth, (req, res) => {
+  if (req.user?.role === "student") {
+    const record: any = getStudentnumByCertFilename(req.params.certFile);
+    if (!record) {
+      res.statusCode = 404;
+      return res.json({
+        error: {
+          msg: "Document not found!",
+        },
+      });
+    }
+    if (record?.studentnum !== req.user?.id) {
+      res.statusCode = 401;
+      return res.json({
+        error: {
+          msg: "Unauthorised!",
+        },
+      });
+    }
+    const pdfDir = `${__dirname}/static/pdf`;
+    res.statusCode = 200;
+    res.contentType("pdf");
+    res.sendFile(`${pdfDir}/${req.params.certFile}`);
+  }
+  // Check auth
 });
 
 // ==============================================
