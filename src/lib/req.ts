@@ -66,3 +66,25 @@ export const addNewAlumniRecord = async (formData: {
     throw error;
   }
 };
+
+export const verifyCertificate = async (formData: { certID: string }) => {
+  console.log(formData);
+  try {
+    const res = await fetch(`${apiURL}/verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+    const resJson = await res.json();
+    console.log(resJson);
+    if (res.status === 200) {
+      return { valid: resJson.data };
+    } else if (res.status === 404) {
+      return { invalid: resJson?.error?.msg };
+    } else {
+      throw resJson?.error?.msg || "Something wrong happend!";
+    }
+  } catch (error: any) {
+    throw error;
+  }
+};

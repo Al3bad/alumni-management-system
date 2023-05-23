@@ -66,3 +66,7 @@ export const addNewAlumniFormValidationSchema = Yup.object({
   fname: Yup.string().required("Required"),
   lname: Yup.string().required("Required"),
 });
+
+export const verifyCertFormValidationSchema = Yup.object({
+  certID: Yup.string().required("Required"),
+});

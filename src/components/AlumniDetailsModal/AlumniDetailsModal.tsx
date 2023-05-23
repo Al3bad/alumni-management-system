@@ -43,7 +43,11 @@ export default function AlumniDetailsModal({
         <span>
           {docObj.docType} [ID: {docObj.docID}]
         </span>
-        {docObj.link ? <button className="">download</button> : null}
+        {docObj.link ? (
+          <a href={`${import.meta.env.VITE_API_URL}${docObj.link}`} download>
+            download
+          </a>
+        ) : null}
       </li>
     );
   });

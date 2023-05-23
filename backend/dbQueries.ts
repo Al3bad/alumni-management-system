@@ -324,22 +324,21 @@ export const getStudentnumByCertFilename = (certFile: string) => {
 };
 
 // Get certificate record (for external users)
-export const getCertificate = (lName: string, id: string) => {
+export const getCertificate = (certID: string) => {
   try {
-    const stmt = db.prepare(`SELECT
-                                a.fname || ' ' || a.lname
-                                    AS "alumniName",
-                                SUBSTR(strftime('%Y', c.issuedate), 3) || PRINTF('%07d',c.id)
-                                    AS "certId",
-                                c.issuedate
-                                    AS "issueDate"
-                            FROM certificate c
-                            JOIN alumni a
-                                ON c.studentnum = a.studentnum
-                            WHERE LOWER(lname) = LOWER(?)
+    const stmt = db.prepare(`
+                            SELECT
+                                u.fname, u.lname,
+                                SUBSTR(strftime('%Y', d.issuedate), 3) || PRINTF('%07d',d.id)
+                                    AS "certID",
+                                STRFTIME('%d/%m/%Y', d.issuedate)
+                                    AS "issuedate"
+                            FROM document d
+                            JOIN user u
+                                ON d.studentnum = u.id
                             AND "certID" = ?
                           `);
-    const certificate: CertificateData | unknown = stmt.get(lName, id);
+    const certificate = stmt.get(certID);
     return certificate;
   } catch (err) {
     console.log(`[ERROR] getCertificate function`);
