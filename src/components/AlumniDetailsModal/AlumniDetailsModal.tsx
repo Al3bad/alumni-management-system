@@ -20,7 +20,7 @@ export default function AlumniDetailsModal({
   studentID,
   showModal,
   setShowModal,
-  onSubmit,
+  // onSubmit,
   onCancel,
 }: IProps) {
   const [alumni, setAlumni] = useState<any>();

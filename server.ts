@@ -39,17 +39,18 @@ app.use(passport.session());
 app.use(cors);
 
 // ==============================================
-// ==> Frontend Routes
-// ==============================================
-// app.use(express.static(`${__dirname}/dist`));
-// app.get("/", (_, res) => {
-//   res.sendFile(`${__dirname}/dist/index.html`);
-// });
-
-// ==============================================
 // ==> API Routes
 // ==============================================
 app.use("/api", api);
+
+// ==============================================
+// ==> Frontend Routes
+// ==============================================
+app.use(express.static(`${__dirname}/static/dist`));
+
+app.get("/*", (_, res) => {
+  res.sendFile(`${__dirname}/static/dist/index.html`);
+});
 
 // ==============================================
 // ==> Start Listening

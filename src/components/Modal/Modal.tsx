@@ -23,7 +23,7 @@ interface IProps {
 const Modal = ({
   children,
   showModal,
-  setShowModal,
+  // setShowModal,
   title,
   submitStr,
   cancelStr,
