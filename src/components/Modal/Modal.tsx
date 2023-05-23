@@ -33,7 +33,7 @@ const Modal = ({
   if (!showModal) return null;
   return (
     <div className="modal">
-      <div className="modal-overlay" onClick={() => setShowModal(false)}></div>
+      <div className="modal-overlay" onClick={onCancel}></div>
       <div className="modal-container" style={{ maxWidth }}>
         {title && <div className="modal__title">{title}</div>}
         <div className="modal__body">

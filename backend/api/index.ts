@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { getAllAlumni, getAlumni, getCertificate } from "../dbQueries";
+import {
+  getAllAlumni,
+  getAlumni,
+  getAlumniDocs,
+  getCertificate,
+} from "../dbQueries";
 import routersAuth from "./routesAuth";
 import { checkAuth } from "../middlewares";
 
@@ -40,6 +45,31 @@ api.get("/alumni/:studentnum", checkAuth, (req, res) => {
   }
   const allAlumni = getAlumni(studentnum);
   return res.json({ data: allAlumni });
+});
+
+api.get("/alumni/:studentnum/docs", checkAuth, (req, res) => {
+  if (req.user?.role !== "admin") {
+    res.statusCode = 401;
+    res.json({ msg: "Unauthorized" });
+    return;
+  }
+  const studentnum = parseInt(req.params.studentnum);
+  if (isNaN(studentnum)) {
+    res.statusCode = 400;
+    res.json({ error: { msg: "Invalid student number!" } });
+    return;
+  }
+  if (req.user.role === "admin") {
+    const docs = getAlumniDocs(studentnum);
+    res.json({ data: docs });
+  } else {
+    res.statusCode = 500;
+    return res.json({
+      error: {
+        msg: "Something wrong happend!",
+      },
+    });
+  }
 });
 
 api.post("/verify", (req, res) => {

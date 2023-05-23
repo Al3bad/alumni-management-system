@@ -2,7 +2,7 @@ import { Formik, Form } from "formik";
 import Modal from "../../components/Modal/Modal";
 import TextInput from "../../components/TextInput/TextInput";
 import { useEffect, useState } from "react";
-import { getAlumniData } from "../../lib/req";
+import { getAlumniData, getAlumniDocsData } from "../../lib/req";
 
 import "./AlumniDetailsModal.scss";
 
@@ -23,87 +23,105 @@ export default function AlumniDetailsModal({
   onSubmit,
   onCancel,
 }: IProps) {
-  const [alumni, setAlumni] = useState();
+  const [alumni, setAlumni] = useState<any>();
 
   useEffect(() => {
-    console.log("Yoooooooooooooooooooooooooooo");
-    const getAlumni = async () => {
-      const alumniData = await getAlumniData(studentID || undefined);
-      console.log(alumniData);
-      setAlumni(alumniData);
+    const getData = async () => {
+      if (studentID) {
+        const alumniData = await getAlumniData(studentID || undefined);
+        const alumniDocsData = await getAlumniDocsData(studentID);
+        setAlumni(alumniData);
+        setAlumni({ ...alumniData, docs: alumniDocsData });
+      }
     };
-
-    getAlumni().catch((_: any) => {});
+    getData().catch((_: any) => {});
   }, [studentID]);
 
+  const docList = alumni?.docs?.map((docObj: any, idx: number) => {
+    return (
+      <li key={idx}>
+        <span>
+          {docObj.docType} [ID: {docObj.docID}]
+        </span>
+        {docObj.link ? <button className="">download</button> : null}
+      </li>
+    );
+  });
+
   return (
-    <Modal
-      showModal={showModal}
-      setShowModal={setShowModal}
-      title="Alumni Details"
-      submitStr="CLOSE"
-      onSubmit={onSubmit}
-      onCancel={onCancel}
-    >
-      {alumni ? (
-        <>
-          <p>
-            Stduent ID {alumni?.id || "-"}{" "}
-            <span
-              className={`status ${alumni?.is_registered ? "green" : "red"}`}
+    <div className="alumni-details-modal">
+      <Modal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        title="Alumni Details"
+        submitStr="OK"
+        onSubmit={onSubmit}
+        onCancel={onCancel}
+      >
+        {alumni ? (
+          <>
+            <h2 className="student-id">
+              <span className="underline">
+                Student ID: s{alumni?.id || "-"}
+              </span>{" "}
+              <span
+                className={`status ${alumni?.is_registered ? "green" : "red"}`}
+              >
+                ({alumni?.is_registered ? "registered" : "unregistered"})
+              </span>
+            </h2>
+            <Formik
+              initialValues={{
+                studentID: alumni?.id,
+                fname: alumni?.fname,
+                lname: alumni?.lname,
+                email: alumni?.email,
+                mobile: alumni?.mobile,
+              }}
+              onSubmit={() => {}}
             >
-              ({alumni?.is_registered ? "registered" : "unregistered"})
-            </span>
-          </p>
-          <Formik
-            initialValues={{
-              studentID: alumni?.id,
-              fname: alumni?.fname,
-              lname: alumni?.lname,
-              email: alumni?.email,
-              mobile: alumni?.mobile,
-            }}
-            onSubmit={() => {}}
-          >
-            <Form>
-              {/* <TextInput */}
-              {/*   label="Student ID" */}
-              {/*   name="studentID" */}
-              {/*   value={alumni?.id || "-"} */}
-              {/*   disabled */}
-              {/* /> */}
-              <div style={{ display: "flex", gap: "2rem" }}>
+              <Form>
+                {/* <TextInput */}
+                {/*   label="Student ID" */}
+                {/*   name="studentID" */}
+                {/*   value={alumni?.id || "-"} */}
+                {/*   disabled */}
+                {/* /> */}
+                <div style={{ display: "flex", gap: "2rem" }}>
+                  <TextInput
+                    label="First Name"
+                    name="fname"
+                    value={alumni.fname || "-"}
+                    disabled
+                  />
+                  <TextInput
+                    label="Last Name"
+                    name="lname"
+                    value={alumni?.lname || "-"}
+                    disabled
+                  />
+                </div>
                 <TextInput
-                  label="First Name"
-                  name="fname"
-                  value={alumni.fname || "-"}
+                  label="Email"
+                  name="email"
+                  value={alumni?.email || "-"}
                   disabled
                 />
                 <TextInput
-                  label="Last Name"
-                  name="lname"
-                  value={alumni?.lname || "-"}
+                  label="Modile"
+                  name="mobile"
+                  value={alumni?.mobile || "-"}
                   disabled
                 />
-              </div>
-              <TextInput
-                label="Email"
-                name="email"
-                value={alumni?.email || "-"}
-                disabled
-              />
-              <TextInput
-                label="Modile"
-                name="mobile"
-                value={alumni?.mobile || "-"}
-                disabled
-              />
-            </Form>
-          </Formik>
-        </>
-      ) : (
-        <p>Loading .. </p>
-      )}
-    </Modal>
+              </Form>
+            </Formik>
+            <h2 className="doc-list-heading">Document List</h2>
+            <ul className="doc-list">{docList}</ul>
+          </>
+        ) : (
+          <p>Loading .. </p>
+        )}
+      </Modal>
+    </div>
   );
 }

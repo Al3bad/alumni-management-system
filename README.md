@@ -77,15 +77,15 @@
 
 ## Admin Page
 
-- [ ] F: Elements & styles
-- [ ] F: Request all alumni from server
-- [ ] B: Respond with all alumni data
+- [x] F: Elements & styles
+- [x] F: Request all alumni from server
+- [x] B: Respond with all alumni data
 
 ## Admin Page - Getting Alumni Details
 
-- [ ] F: Open modal when alumni is selected
-- [ ] F: Request alumni details from server
-- [ ] B: Respond with alumni details
+- [x] F: Open modal when alumni is selected
+- [x] F: Request alumni details from server
+- [x] B: Respond with alumni details
 
 ## Admin Page - Reset Email for an Alumni User
 

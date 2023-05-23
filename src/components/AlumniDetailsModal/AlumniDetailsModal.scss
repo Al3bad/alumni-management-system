@@ -1,19 +1,53 @@
 @import "./../../scss/button";
 @import "./../../scss/variables";
 
-.status {
-  width: 0.7rem;
-  height: 0.7rem;
-  border-radius: 50%;
-  // transform: scale(1);
-  // transition: 0.3s ease-in-out;
-  // &:hover {
-  //   transform: scale(1.7);
-  // }
-}
-.green {
-  color: $green-color;
-}
-.red {
-  color: $red-color;
+.alumni-details-modal {
+  .student-id {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    font-weight: bold;
+    .underline {
+      text-decoration: underline;
+    }
+  }
+  .status {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+  }
+  .green {
+    color: $green-color;
+  }
+  .red {
+    color: $red-color;
+  }
+  .doc-list-heading {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  .doc-list {
+    width: 100%;
+    list-style: none;
+    li {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding: 0.8rem;
+      border-radius: 5px;
+      background: $gray-100;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      &:hover {
+        background: $gray-300;
+      }
+      button {
+        background: none;
+        border: none;
+        color: $primary-color;
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
+  }
 }

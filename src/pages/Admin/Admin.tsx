@@ -44,6 +44,12 @@ export default function Admin() {
     setShowModal(true);
   };
 
+  const onModalClose = () => {
+    console.log("Modal Closed!");
+    setSelectedAlumni(null);
+    setShowModal(false);
+  };
+
   const alumniList = allAlumni.map((alumniData: any, idx: number) => {
     return (
       <li key={idx} onClick={() => onAlumniRecordClicked(alumniData.id)}>
@@ -70,7 +76,7 @@ export default function Admin() {
         showModal={showModal}
         setShowModal={setShowModal}
         onSubmit={() => {}}
-        onCancel={() => setShowModal(false)}
+        onCancel={() => onModalClose()}
       />
       <div className="container">
         <div className="profile">
