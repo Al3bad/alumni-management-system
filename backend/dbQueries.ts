@@ -37,10 +37,10 @@ export const createUserTable = () => {
                                 id INTEGER PRIMARY KEY,
                                 fname TEXT NOT NULL,
                                 lname TEXT NOT NULL,
-                                email TEXT NOT NULL,
-                                mobile TEXT NOT NULL,
-                                password TEXT NOT NULL,
-                                salt TEXT NOT NULL,
+                                email TEXT,
+                                mobile TEXT,
+                                password TEXT,
+                                salt TEXT,
                                 role TEXT NOT NULL
                             )`);
     const info = stmt.run();
