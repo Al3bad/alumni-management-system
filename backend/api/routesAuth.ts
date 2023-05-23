@@ -75,14 +75,12 @@ passport.use(
 );
 
 passport.serializeUser(function (user, cb) {
-  console.log("Serialize ", user);
   process.nextTick(function () {
     cb(null, user);
   });
 });
 
 passport.deserializeUser(function (user: Express.User | false | null, cb) {
-  console.log("Deserialize ", user);
   process.nextTick(function () {
     return cb(null, user);
   });
@@ -95,7 +93,6 @@ const router = Router();
 // ==============================================
 router.get("/user", checkAuth, (req, res) => {
   if (req.user?.id) {
-    console.log("Get data for " + req.user.role + " user!");
     if (req.user.role === "student") {
       const docs = getAlumniDocs(req.user.id);
       res.json({ info: req.user, docs });
@@ -120,7 +117,6 @@ router.get("/user", checkAuth, (req, res) => {
 });
 
 router.get("/admin", checkAuth, (req, res) => {
-  console.log(req.user);
   if (req.user?.id) {
     res.json({ user: req.user });
   } else {
@@ -137,12 +133,8 @@ router.get("/admin", checkAuth, (req, res) => {
 // ==> Register Alumni
 // ==============================================
 router.post("/register", async (req, res, next) => {
-  console.log("/api/register route is working!");
-  console.log(req.body);
-
   // Vallidate input
   const isValid = await registerFormValidationBackendSchema.isValid(req.body);
-  console.log(`Form data is ${isValid ? "valid" : "invalid"}!`);
   const { studentID, email, mobile, password } = req.body;
 
   // form data is not valid?
@@ -211,7 +203,6 @@ router.post("/register", async (req, res, next) => {
         res.statusCode = 404;
         return res.end("User not found!");
       }
-      console.log("You're logged in now");
       (req.session as any).passport = {};
       (req.session as any).passport.user = user;
       req.login(user, next);
@@ -235,9 +226,7 @@ router.post("/register", async (req, res, next) => {
 // ==> Login Alumni
 // ==============================================
 router.post("/login", passport.authenticate("local"), (req, res) => {
-  console.log(req.session);
   if (req.isAuthenticated()) {
-    console.log(`Logged in user:`, req.user);
     return res.json({
       user: req.user,
     });

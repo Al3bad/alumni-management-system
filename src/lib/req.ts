@@ -45,7 +45,6 @@ export const addNewAlumniRecord = async (formData: {
   fname: string;
   lname: string;
 }) => {
-  console.log(formData);
   try {
     const res = await fetch(`${apiURL}/alumni`, {
       method: "POST",
@@ -68,7 +67,6 @@ export const addNewAlumniRecord = async (formData: {
 };
 
 export const verifyCertificate = async (formData: { certID: string }) => {
-  console.log(formData);
   try {
     const res = await fetch(`${apiURL}/verify`, {
       method: "POST",
@@ -76,7 +74,6 @@ export const verifyCertificate = async (formData: { certID: string }) => {
       body: JSON.stringify(formData),
     });
     const resJson = await res.json();
-    console.log(resJson);
     if (res.status === 200) {
       return { valid: resJson.data };
     } else if (res.status === 404) {

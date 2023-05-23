@@ -53,7 +53,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (res.status === 200) {
         const resJson = await res.json();
         // setUser(resJson.user);
-        console.log(resJson.user);
         return resJson.user;
       } else {
         throw "Invalid email or password!";

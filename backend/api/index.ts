@@ -32,7 +32,6 @@ api.use(routersAuth);
 // ==> Download certificate files
 // ==============================================
 api.get("/pdf/:certFile", checkAuth, (req, res) => {
-  console.log((req.user as any).role);
   const filePath = path.resolve(
     __dirname,
     "..",
@@ -41,7 +40,6 @@ api.get("/pdf/:certFile", checkAuth, (req, res) => {
     "pdf",
     req.params.certFile
   );
-  console.log(filePath);
   if (req.user?.role === "student") {
     const record: any = getStudentnumByCertFilename(req.params.certFile);
     if (!record) {
@@ -131,7 +129,6 @@ api.post("/alumni", checkAuth, async (req, res) => {
     });
   }
   const certData: any = insertAlumniWithCert({ studentnum, fname, lname });
-  console.log(certData);
   // Create the certificate document
   res.statusCode = 201;
   return res.json({ data: "A new alumni was sucessfully created!" });
@@ -183,7 +180,6 @@ api.get("/alumni/:studentnum/docs", checkAuth, (req, res) => {
 // ==============================================
 
 api.post("/verify", async (req, res) => {
-  console.log("/api/verify route is working!");
   const { certID } = req.body;
 
   const isValid = await verifyCertFormValidationSchema.isValid(req.body);

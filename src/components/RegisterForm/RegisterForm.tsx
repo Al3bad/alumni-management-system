@@ -14,13 +14,11 @@ interface IProps {
 }
 
 const initialFormValues = {
-  studentID: "s3635950",
-  // fname: "",
-  // lname: "",
-  email: "alumni@rmit.com",
-  mobile: "0400000000",
-  password: "asdASD123!@#",
-  passwordConfirm: "asdASD123!@#",
+  studentID: "",
+  email: "",
+  mobile: "",
+  password: "",
+  passwordConfirm: "",
 };
 
 export default function RegisterForm({ setFormType }: IProps) {
