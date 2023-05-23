@@ -6,7 +6,7 @@
     "dev": "concurrently 'npm run dev:server' 'npm run dev:frontend'",
     "dev:frontend": "vite --port 5173",
     "dev:server": "nodemon -x 'ts-node --project ./tsconfig.node.json server.ts'",
-    "prod:server": "npm run build && NODE_ENV=production ts-node --project ./tsconfig.node.json server.ts",
+    "prod:server": "NODE_ENV=production ts-node --project ./tsconfig.node.json server.ts",
     "seed-db": "ts-node --project ./tsconfig.node.json ./backend/dbSeed.ts",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
