@@ -213,7 +213,25 @@ export const insertAlumniWithCert = ({
       // Insert new certificate
       info.newCertInfo = db.prepare(query2).run(studentnum);
     })([{}]);
-    return info;
+
+    const newCertificate = db
+      .prepare(
+        `SELECT  SUBSTR(strftime('%Y', d.issuedate), 3) || PRINTF('%07d',d.id)
+            AS "certID",
+            u.fname,
+            u.lname,
+            STRFTIME('%d/%m/%Y', d.issuedate)
+                AS "issuedate"
+            FROM user u
+            JOIN document d
+                ON u.id = d.studentnum
+            WHERE u.id = ? AND d.id = ?`
+      )
+      .get(
+        info.newAlumniInfo.lastInsertRowid,
+        info.newCertInfo.lastInsertRowid
+      );
+    return newCertificate;
   } catch (err) {
     console.log(err);
   }
