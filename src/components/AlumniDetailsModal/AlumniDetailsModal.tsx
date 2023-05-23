@@ -58,8 +58,7 @@ export default function AlumniDetailsModal({
         showModal={showModal}
         setShowModal={setShowModal}
         title="Alumni Details"
-        submitStr="OK"
-        onSubmit={onSubmit}
+        cancelStr="BACK"
         onCancel={onCancel}
       >
         {alumni ? (
@@ -85,12 +84,6 @@ export default function AlumniDetailsModal({
               onSubmit={() => {}}
             >
               <Form>
-                {/* <TextInput */}
-                {/*   label="Student ID" */}
-                {/*   name="studentID" */}
-                {/*   value={alumni?.id || "-"} */}
-                {/*   disabled */}
-                {/* /> */}
                 <div style={{ display: "flex", gap: "2rem" }}>
                   <TextInput
                     label="First Name"

@@ -14,9 +14,9 @@ import { insertAdmin, insertAlumniWithCert, registerAlumni } from "./dbQueries";
 const adminData = [
   {
     id: 1000000,
-    fname: "Alex",
-    lname: "A",
-    email: "admin@test.com",
+    fname: "Abdullah",
+    lname: "Alabbad",
+    email: "admin@rmit.com",
     mobile: "0400000000",
     password: "asdASD123!@#",
   },
@@ -26,7 +26,7 @@ const alumniData = [
   {
     studentnum: 3635950,
     fname: "John",
-    lname: "Alaxv",
+    lname: "Walker",
   },
   {
     studentnum: 3635951,
@@ -43,19 +43,19 @@ const alumniData = [
 const alumniRegisterData = [
   {
     studentnum: 3635950,
-    email: "a@test.com",
+    email: "a@rmit.com",
     mobile: "0400000000",
     password: "asdASD123!@#",
   },
   {
     studentnum: 3635951,
-    email: "b@test.com",
+    email: "b@rmit.com",
     mobile: "0400000000",
     password: "asdASD123!@#",
   },
   {
     studentnum: 3635952,
-    email: "c@test.com",
+    email: "c@rmit.com",
     mobile: "0400000000",
     password: "asdASD123!@#",
   },

@@ -48,6 +48,13 @@
         cursor: pointer;
         text-decoration: underline;
       }
+      a {
+        background: none;
+        border: none;
+        color: $primary-color;
+        cursor: pointer;
+        text-decoration: underline;
+      }
     }
   }
 }

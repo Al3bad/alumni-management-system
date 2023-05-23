@@ -12,7 +12,6 @@ import "./App.scss";
 // ==> Component
 //===============================================
 export default function App() {
-  // const [certificate, setCertificate] = useState(null);
   return (
     <AuthProvider>
       <Routes>
