@@ -26,6 +26,7 @@ export default function AlumniDetailsModal({
   const [alumni, setAlumni] = useState<any>();
 
   useEffect(() => {
+    setAlumni(null);
     const getData = async () => {
       if (studentID) {
         const alumniData = await getAlumniData(studentID || undefined);

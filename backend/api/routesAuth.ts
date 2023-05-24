@@ -116,18 +116,18 @@ router.get("/user", checkAuth, (req, res) => {
   }
 });
 
-router.get("/admin", checkAuth, (req, res) => {
-  if (req.user?.id) {
-    res.json({ user: req.user });
-  } else {
-    res.statusCode = 404;
-    return res.json({
-      error: {
-        msg: "User not found!",
-      },
-    });
-  }
-});
+// router.get("/admin", checkAuth, (req, res) => {
+//   if (req.user?.id) {
+//     res.json({ user: req.user });
+//   } else {
+//     res.statusCode = 404;
+//     return res.json({
+//       error: {
+//         msg: "User not found!",
+//       },
+//     });
+//   }
+// });
 
 // ==============================================
 // ==> Register Alumni
@@ -188,9 +188,6 @@ router.post("/register", async (req, res, next) => {
     password: hashedPassword,
     salt,
   });
-
-  // TODO: Create certificate for the new alumni (this should be done by the admin user)
-  // const info2 = insertCertificate(studentnum);
 
   // authenticate user after register
   passport.authenticate(
