@@ -172,7 +172,7 @@ router.post("/register", async (req, res, next) => {
     res.statusCode = 400;
     return res.json({
       error: {
-        msg: "This email already used!",
+        msg: "Alumni already registered!",
       },
     });
   }

@@ -106,7 +106,7 @@ export default function AlumniDetailsModal({
                   disabled
                 />
                 <TextInput
-                  label="Modile"
+                  label="Mobile"
                   name="mobile"
                   value={alumni?.mobile || "-"}
                   disabled
